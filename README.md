@@ -75,6 +75,8 @@ Before running the application, make sure you have the following installed on yo
 | **GitHub Account** | Free static site hosting on GitHub Pages | **Required** (for Mode B) | [github.com](https://github.com) |
 | **Docker Desktop** | Running local containerized Ghost instances per project | **Optional** (Only needed for Mode A local Ghost) | [docker.com](https://www.docker.com/products/docker-desktop/) |
 | **Cloudflare CLI (`cloudflared`)** | Public HTTPS Tunnels for Mode A | **Optional** (Only for Mode A Tunnels) | [developers.cloudflare.com](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) |
+| **Netlify / Vercel / Render Account** | Alternative high-performance static hosting platforms | **Optional** (If not using GitHub Pages) | [netlify.com](https://netlify.com) / [vercel.com](https://vercel.com) / [render.com](https://render.com) |
+| **Form Endpoint / Newsletter API Key** | Contact forms, newsletter subscriptions, Tally widgets | **Optional** (If using interactive newsletter/forms) | [formspree.io](https://formspree.io) / [buttondown.email](https://buttondown.email) |
 
 ---
 
