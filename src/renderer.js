@@ -288,15 +288,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const layoutReadmeLink = document.getElementById('layout-readme-link');
-  if (layoutReadmeLink) {
-    layoutReadmeLink.addEventListener('click', (e) => {
-      e.preventDefault();
-      if (window.ghostAppAPI && window.ghostAppAPI.openReadme) {
-        window.ghostAppAPI.openReadme();
-      }
-    });
-  }
 
   const btnSaveProjectLayout = document.getElementById('btn-save-project-layout');
   if (btnSaveProjectLayout) {

@@ -8,7 +8,7 @@
 
 [![Created by Swapp Tech](https://img.shields.io/badge/Created%20By-Swapp%20Technologies%20LLC-6366f1?style=for-the-badge)](https://swapptech.com)
 [![Built with Antigravity](https://img.shields.io/badge/AI%20Pair%20Programmer-Google%20Antigravity-4285F4?style=for-the-badge&logo=google)](https://deepmind.google)
-[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/swapptech)
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/swappTechOpenSource)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge)](LICENSE)
 
 <br/>
