@@ -1,0 +1,30 @@
+{
+  "name": "staticghost",
+  "version": "1.0.0",
+  "description": "StaticGhost: Desktop interface to run Ghost locally via Docker and export to clean, SEO-optimized static HTML pages.",
+  "main": "main.js",
+  "scripts": {
+    "start": "npx electron .",
+    "test": "node test-suite.js"
+  },
+  "keywords": [
+    "ghost",
+    "static-site-generator",
+    "github-pages",
+    "electron",
+    "cloudflare-tunnel",
+    "affiliate-marketing"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
+    "crypto-js": "^4.2.0",
+    "express": "^4.19.2",
+    "mime-types": "^2.1.35",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0"
+  }
+}

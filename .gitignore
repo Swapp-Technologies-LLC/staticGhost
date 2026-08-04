@@ -1,0 +1,12 @@
+# Node modules – always ignore
+node_modules/
+# Build artefacts
+*.log
+*.tmp
+# Theme files (license‑restricted)
+themes/themeforest-*/   # the whole folder
+themes/*.zip            # any zip you might place locally
+# Unwanted markdown files (adjust the names if you only want to ignore specific ones)
+*.md
+!README.md       # keep README tracked (the exclamation negates the previous rule)
+*.zip
