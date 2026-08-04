@@ -25,20 +25,100 @@
 
 ---
 
-## 💬 Giscus Comments Integration & Setup
+> A modern Desktop application (built with Electron & Node.js) to manage local Ghost blogs per project, ingest custom main website designs, auto-tag affiliate links, encrypt protected posts, and deploy static HTML pages to **GitHub Pages, Netlify, Cloudflare Pages, Render, or Vercel for 100% free hosting**.
 
-The static site exporter supports free, secure, and zero-database comments powered by [Giscus](https://giscus.app), which stores comments directly inside your repository's GitHub Discussions.
+---
 
-### 📋 Prerequisites & Setup on GitHub:
-1. **Target Repository Requirements**:
-   - The target GitHub repository must be **public** (private repositories do not support Giscus comments for anonymous/outside visitors).
-   - The repository must have **Discussions** enabled. (Go to your repository **Settings ➔ General ➔ Features** and check the **Discussions** checkbox).
-2. **Authorize Giscus App**:
-   - Go to [github.com/apps/giscus](https://github.com/apps/giscus) and click **Install**.
-   - Grant it access to your target blog repository.
-3. **Configure input in the Desktop App**:
-   - Enter your repository name in the format `Owner/Repository` (e.g. `username/my-blog-repo`) inside the **Giscus GitHub Comments Repo** input field.
-   - When visitors load your static posts, a clean commenting interface will render automatically at the bottom, syncing discussion threads directly to GitHub!
+## 📑 Table of Contents
+
+- [✨ Features](#-features)
+- [📋 Prerequisites & System Requirements](#-prerequisites--system-requirements)
+- [🛠️ Quick Start & Testing](#️-quick-start--testing)
+- [🔑 First-Time Ghost Admin Setup (Mode A)](#-first-time-ghost-admin-setup-mode-a)
+- [🎨 Design Ingestion & Custom `layout.html` Guide](#-design-ingestion--custom-layouthtml-guide)
+- [💰 Affiliate Link Ingestion & Automation](#-affiliate-link-ingestion--automation)
+- [💬 Giscus Comments Integration & Setup](#-giscus-comments-integration--setup)
+- [✉️ Newsletter Subscriptions on a Static Blog](#️-newsletter-subscriptions-on-a-static-blog)
+- [📝 Custom Signup, Contact & Beta Forms on Static Sites](#-custom-signup-contact--beta-forms-on-static-sites)
+- [🌐 Deployment Architecture: Subfolder vs Subdomain](#-deployment-architecture-subfolder-vs-subdomain)
+- [🔒 Security Architecture & Credentials Management](#-security-architecture--credentials-management)
+- [🛡️ Security Disclaimer & Token Best Practices](#️-security-disclaimer--token-best-practices)
+- [🤝 Standing on the Shoulders of Giants](#-standing-on-the-shoulders-of-giants)
+- [💖 Giving Back to Open Source](#-giving-back-to-open-source)
+- [📜 License & Collaboration](#-license--collaboration)
+
+---
+
+## ✨ Features
+
+- **📂 Multi-Project Profiles**: Manage multiple independent project blogs (e.g. *Project A*, *Project B*) each with their own Docker container, volume, port, design layout, logo, and GitHub repository.
+- **🐳 Mode A: Docker & Cloudflare Tunnel**: Run Ghost locally in a dedicated Docker container (`ghost:5-alpine`) with isolated persistent volumes, and manage files instantly via the built-in 1-click Web File Browser.
+- **⚡ Mode B: Static HTML Exporter**: Convert Ghost posts into zero-cost, static HTML pages ready for GitHub Pages.
+- **🎨 Custom Design & Logo Ingestion**: Import your main website's `layout.html` file so blog posts share your exact header, footer, navbar, logos, and CSS styling.
+- **💰 Affiliate Link Automation**: Auto-tags product links (`amazon.com`, `bestbuy.com`, etc.) with `rel="sponsored nofollow noopener"` and `target="_blank"` for Google SEO compliance and link monetization tracking.
+- **🔒 Build-Time AES-256 Password Protection**: Encrypts password-protected posts at export time. Unencrypted text is never exposed on GitHub Pages; visitors decrypt posts in-browser with a password prompt.
+- **🔍 Pagefind Static Full-Text Search**: Builds an instant client-side search index (`/search/search-index.js`) without requiring a search server.
+- **💬 Giscus GitHub Comments**: Embeds free GitHub Discussions commenting into static posts.
+- **📡 RSS & Sitemap XML**: Automatically generates valid `rss.xml` and `sitemap.xml` files.
+- **🚀 Multi-Cloud Publisher**: Deploy directly to GitHub Pages, Netlify, Cloudflare Pages, Render, or Vercel.
+
+---
+
+## 📋 Prerequisites & System Requirements
+
+Before running the application, make sure you have the following installed on your machine:
+
+| Tool | Required For | Required? | Download Link |
+| :--- | :--- | :--- | :--- |
+| **Node.js** (v18+) | Running the desktop application (`npm start`) | **Required** | [nodejs.org](https://nodejs.org) |
+| **Git for Windows / Mac / Linux** | 1-Click Publishing to GitHub Pages | **Required** (for Mode B) | [git-scm.com](https://git-scm.com) |
+| **GitHub Account** | Free static site hosting on GitHub Pages | **Required** (for Mode B) | [github.com](https://github.com) |
+| **Docker Desktop** | Running local containerized Ghost instances per project | **Optional** (Only needed for Mode A local Ghost) | [docker.com](https://www.docker.com/products/docker-desktop/) |
+| **Cloudflare CLI (`cloudflared`)** | Public HTTPS Tunnels for Mode A | **Optional** (Only for Mode A Tunnels) | [developers.cloudflare.com](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) |
+
+---
+
+## 🛠️ Quick Start & Testing
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Swapp-Technologies-LLC/staticGhost.git
+   cd staticGhost
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Run verification tests:
+   ```bash
+   npm test
+   ```
+
+4. Launch the Desktop GUI:
+   ```bash
+   npm start
+   ```
+
+---
+
+## 🔑 First-Time Ghost Admin Setup (Mode A)
+
+When running a local Ghost instance via **Mode A (Docker)**:
+
+1. **Start the Container**: In the StaticGhost dashboard under **Mode A: Docker + Tunnel**, click **Start This Project Container**.
+2. **Open Ghost Admin**: Open your web browser and navigate to:
+   ```
+   http://localhost:2368/ghost
+   ```
+   *(Replace `2368` with your project's allocated port if using a custom port).*
+3. **Complete First-Time Setup**: Follow the on-screen Ghost setup wizard to create your admin account (email, password, and site title).
+4. **Generate Content API Key** (Required for Mode B Exporter):
+   - Inside Ghost Admin, navigate to **Settings (⚙️) ➔ Integrations**.
+   - Scroll down to the bottom and click **+ Add custom integration**.
+   - Name it (e.g. `StaticGhost`) and click **Create**.
+   - Copy the generated **Content API Key** and paste it into the StaticGhost app under **Overview Connection Test** or **Mode B Exporter**.
 
 ---
 
@@ -114,112 +194,20 @@ When exporting static pages:
 
 ---
 
-## 🔑 Accessing Ghost Admin for the First Time (Mode A Setup)
+## 💬 Giscus Comments Integration & Setup
 
-When running a local Ghost instance via **Mode A (Docker)**:
+The static site exporter supports free, secure, and zero-database comments powered by [Giscus](https://giscus.app), which stores comments directly inside your repository's GitHub Discussions.
 
-1. **Start the Container**: In the Ghost Desktop Suite dashboard under **Mode A: Docker + Tunnel**, click **Start This Project Container**.
-2. **Open Ghost Admin**: Open your web browser and navigate to:
-   ```
-   http://localhost:2368/ghost
-   ```
-   *(Replace `2368` with your project's allocated port if using a custom port).*
-3. **Complete First-Time Setup**: Follow the on-screen Ghost setup wizard to create your admin account (email, password, and site title).
-4. **Generate Content API Key** (Required for Mode B Exporter):
-   - Inside Ghost Admin, navigate to **Settings (⚙️) ➔ Integrations**.
-   - Scroll down to the bottom and click **+ Add custom integration**.
-   - Name it (e.g. `Ghost Desktop Suite`) and click **Create**.
-   - Copy the generated **Content API Key** and paste it into the Ghost Desktop Suite app under **Overview Connection Test** or **Mode B Exporter**.
-
----
-
-> A modern Desktop application (built with Electron & Node.js) to manage local Ghost blogs per project, ingest custom main website designs, auto-tag affiliate links, encrypt protected posts, and deploy static HTML pages to **GitHub Pages, Netlify, Cloudflare Pages, Render, or Vercel for 100% free hosting**.
-
----
-
-## 📋 Prerequisites & System Requirements
-
-Before running the application, make sure you have the following installed on your machine:
-
-| Tool | Required For | Required? | Download Link |
-| :--- | :--- | :--- | :--- |
-| **Node.js** (v18+) | Running the desktop application (`npm start`) | **Required** | [nodejs.org](https://nodejs.org) |
-| **Git for Windows / Mac / Linux** | 1-Click Publishing to GitHub Pages | **Required** (for Mode B) | [git-scm.com](https://git-scm.com) |
-| **GitHub Account** | Free static site hosting on GitHub Pages | **Required** (for Mode B) | [github.com](https://github.com) |
-| **Docker Desktop** | Running local containerized Ghost instances per project | **Optional** (Only needed for Mode A local Ghost) | [docker.com](https://www.docker.com/products/docker-desktop/) |
-| **Cloudflare CLI (`cloudflared`)** | Public HTTPS Tunnels for Mode A | **Optional** (Only for Mode A Tunnels) | [developers.cloudflare.com](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/) |
-
----
-
-## 🛡️ Security Disclaimer & Token Best Practices
-
-> [!WARNING]
-> **Local Device & Credential Security**:
-> - All saved access tokens are automatically encrypted on disk using your operating system's native keychain (`safeStorage` via Windows DPAPI / macOS Keychain / Linux Secret Service).
-> - However, if an unauthorized 3rd party gains physical access or remote control of your unlocked local computer, stored credentials could potentially be accessed.
-> - **Recommended Best Practice**: Always use **Fine-Grained Personal Access Tokens** (or SSH keys) scoped **strictly to the target blog repository** with minimum required permissions (`Contents: Read and write`). Never use account-wide admin tokens.
-
----
-
-## ✨ Features
-
-- **📂 Multi-Project Profiles**: Manage multiple independent project blogs (e.g. *Project A*, *Project B*) each with their own Docker container, volume, port, design layout, logo, and GitHub repository.
-- **🐳 Mode A: Docker & Cloudflare Tunnel**: Run Ghost locally in a dedicated Docker container (`ghost:5-alpine`) with isolated persistent volumes, and manage files instantly via the built-in 1-click Web File Browser.
-- **⚡ Mode B: Static HTML Exporter**: Convert Ghost posts into zero-cost, static HTML pages ready for GitHub Pages.
-- **🎨 Custom Design & Logo Ingestion**: Import your main website's `layout.html` file so blog posts share your exact header, footer, navbar, logos, and CSS styling.
-- **💰 Affiliate Link Automation**: Auto-tags product links (`amazon.com`, `bestbuy.com`, etc.) with `rel="sponsored nofollow noopener"` and `target="_blank"` for Google SEO compliance and link monetization tracking.
-- **🔒 Build-Time AES-256 Password Protection**: Encrypts password-protected posts at export time. Unencrypted text is never exposed on GitHub Pages; visitors decrypt posts in-browser with a password prompt.
-- **🔍 Pagefind Static Full-Text Search**: Builds an instant client-side search index (`/search/search-index.js`) without requiring a search server.
-- **💬 Giscus GitHub Comments**: Embeds free GitHub Discussions commenting into static posts.
-- **📡 RSS & Sitemap XML**: Automatically generates valid `rss.xml` and `sitemap.xml` files.
-- **🚀 Multi-Cloud Publisher**: Deploy directly to GitHub Pages, Netlify, Cloudflare Pages, Render, or Vercel.
-
----
-
-## 🛠️ Quick Start & Testing
-
-1. Clone or navigate to the project directory:
-   ```bash
-   cd ghost_blog_to_html_only_pages
-   ```
-
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Run verification tests:
-   ```bash
-   npm test
-   ```
-
-4. Launch the Desktop GUI:
-   ```bash
-   npm start
-   ```
-
----
-
-## 🌐 Deployment Architecture: Subfolder vs Subdomain
-
-When hosting a static blog alongside your main marketing website on platforms like GitHub Pages, we recommend the following structural layout:
-
-### 1. Host the Blog in a Separate Repository (Recommended)
-Always keep your static blog files in a **separate repository** (e.g. `my-blog-repo`) rather than merging it with your main website's codebase:
-- **Clean Git Logs**: Re-generating static files, RSS feeds, and Pagefind search indexes creates high commit frequency. A separate repository prevents bloat in your core website's Git history.
-- **Security & Scope**: Your Personal Access Tokens (PATs) or deployment credentials only need write permission for the blog repository, isolating security risks.
-- **Build Efficiency**: Prevents your main website's build pipeline (e.g. Netlify/Vercel) from triggering useless deployments every time a post is exported.
-
-### 2. Configure Subfolder (`example.com/blog`) vs Subdomain (`blog.example.com`)
-
-- **Subfolder (`example.com/blog`) — Best for SEO (Recommended)**:
-  - **SEO Benefit**: Directly consolidates search rank and domain authority under your main website. Backlinks to your blog posts automatically improve your core domain's SEO.
-  - **GitHub Pages Setup**: Create a separate repository named **`blog`** under the exact same GitHub account/organization that controls your main site repository (which is mapped to custom domain `example.com`). GitHub Pages will natively resolve it at `example.com/blog` without requiring reverse proxies.
-  - **Cross-Platform Setup (GitHub Pages Main + Netlify Blog)**: GitHub Pages cannot natively proxy subfolders to external hosts. If you host the main site on GitHub and the blog on Netlify (e.g. to use Netlify Forms), you must route your domain through **Cloudflare** and use a Cloudflare Worker to proxy `/blog/*` requests to your Netlify app. Alternatively, move **both** sites to Netlify and add a `_redirects` file to your main site to rewrite `/blog/*` to your blog project with a `200` status code (e.g. `/blog/* https://my-blog.netlify.app/:splat 200`).
-
-- **Subdomain (`blog.example.com`) — Easiest Setup**:
-  - **SEO Benefit**: Lower. Search engines treat subdomains as separate web properties, meaning you must build domain authority for the blog independently.
-  - **GitHub Pages Setup**: Configure a custom CNAME DNS record for `blog` pointing to your user page (e.g. `username.github.io`) and save it under your repository settings.
+### 📋 Prerequisites & Setup on GitHub:
+1. **Target Repository Requirements**:
+   - The target GitHub repository must be **public** (private repositories do not support Giscus comments for anonymous/outside visitors).
+   - The repository must have **Discussions** enabled. (Go to your repository **Settings ➔ General ➔ Features** and check the **Discussions** checkbox).
+2. **Authorize Giscus App**:
+   - Go to [github.com/apps/giscus](https://github.com/apps/giscus) and click **Install**.
+   - Grant it access to your target blog repository.
+3. **Configure input in the Desktop App**:
+   - Enter your repository name in the format `Owner/Repository` (e.g. `username/my-blog-repo`) inside the **Giscus GitHub Comments Repo** input field.
+   - When visitors load your static posts, a clean commenting interface will render automatically at the bottom, syncing discussion threads directly to GitHub!
 
 ---
 
@@ -279,9 +267,32 @@ Use visual form creators like **[Tally.so](https://tally.so)**, **Google Forms**
 
 ---
 
+## 🌐 Deployment Architecture: Subfolder vs Subdomain
+
+When hosting a static blog alongside your main marketing website on platforms like GitHub Pages, we recommend the following structural layout:
+
+### 1. Host the Blog in a Separate Repository (Recommended)
+Always keep your static blog files in a **separate repository** (e.g. `my-blog-repo`) rather than merging it with your main website's codebase:
+- **Clean Git Logs**: Re-generating static files, RSS feeds, and Pagefind search indexes creates high commit frequency. A separate repository prevents bloat in your core website's Git history.
+- **Security & Scope**: Your Personal Access Tokens (PATs) or deployment credentials only need write permission for the blog repository, isolating security risks.
+- **Build Efficiency**: Prevents your main website's build pipeline (e.g. Netlify/Vercel) from triggering useless deployments every time a post is exported.
+
+### 2. Configure Subfolder (`example.com/blog`) vs Subdomain (`blog.example.com`)
+
+- **Subfolder (`example.com/blog`) — Best for SEO (Recommended)**:
+  - **SEO Benefit**: Directly consolidates search rank and domain authority under your main website. Backlinks to your blog posts automatically improve your core domain's SEO.
+  - **GitHub Pages Setup**: Create a separate repository named **`blog`** under the exact same GitHub account/organization that controls your main site repository (which is mapped to custom domain `example.com`). GitHub Pages will natively resolve it at `example.com/blog` without requiring reverse proxies.
+  - **Cross-Platform Setup (GitHub Pages Main + Netlify Blog)**: GitHub Pages cannot natively proxy subfolders to external hosts. If you host the main site on GitHub and the blog on Netlify (e.g. to use Netlify Forms), you must route your domain through **Cloudflare** and use a Cloudflare Worker to proxy `/blog/*` requests to your Netlify app. Alternatively, move **both** sites to Netlify and add a `_redirects` file to your main site to rewrite `/blog/*` to your blog project with a `200` status code (e.g. `/blog/* https://my-blog.netlify.app/:splat 200`).
+
+- **Subdomain (`blog.example.com`) — Easiest Setup**:
+  - **SEO Benefit**: Lower. Search engines treat subdomains as separate web properties, meaning you must build domain authority for the blog independently.
+  - **GitHub Pages Setup**: Configure a custom CNAME DNS record for `blog` pointing to your user page (e.g. `username.github.io`) and save it under your repository settings.
+
+---
+
 ## 🔒 Security Architecture & Credentials Management
 
-The **Ghost Desktop Suite** is designed with security-first principles to keep your local credentials, database content, and publishing tokens completely safe:
+The **StaticGhost Desktop Suite** is designed with security-first principles to keep your local credentials, database content, and publishing tokens completely safe:
 
 ### 1. OS-Level Credentials Encryption (At Rest)
 Any sensitive credentials you enter into the application (such as your **GitHub Personal Access Tokens** and **Ghost API keys**) are encrypted before being saved to disk:
@@ -296,12 +307,22 @@ Your local Ghost databases and media files are stored inside isolated **Docker v
 
 ### 3. Edge Tunneling (Cloudflare Access Controls)
 When exposing your local container via **Mode A Cloudflare Tunnels**, traffic is securely proxied:
-- The Cloudflare tunnel creates an outbound connection to Cloudflare’s edge servers.
+- The Cloudflare tunnel creates an outbound connection to Cloudflare's edge servers.
 - You do **not** need to open any incoming router ports or expose your home IP address, protecting your network from port scanners and DDOS attacks.
 
 ### 4. Double Opt-in Signup Validation
 For newsletters or user registrations on your static website, double opt-in is enforced by default:
 - Even if an unauthorized person had physical access to your keyboard or submitted inputs, they cannot finalize newsletter signup without direct access to the recipient's personal email inbox to click the verification links.
+
+---
+
+## 🛡️ Security Disclaimer & Token Best Practices
+
+> [!WARNING]
+> **Local Device & Credential Security**:
+> - All saved access tokens are automatically encrypted on disk using your operating system's native keychain (`safeStorage` via Windows DPAPI / macOS Keychain / Linux Secret Service).
+> - However, if an unauthorized 3rd party gains physical access or remote control of your unlocked local computer, stored credentials could potentially be accessed.
+> - **Recommended Best Practice**: Always use **Fine-Grained Personal Access Tokens** (or SSH keys) scoped **strictly to the target blog repository** with minimum required permissions (`Contents: Read and write`). Never use account-wide admin tokens.
 
 ---
 
