@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <link rel="shortcut icon" href="./src/favicon.ico" type="image/x-icon">
+  <meta name="description" content="StaticGhost: The ultimate local Ghost CMS compiler and static publisher. Built by Swapp Technologies LLC in collaboration with Google Antigravity AI.">
+  
+  <title>StaticGhost - Local CMS & Zero-Cost Static Publisher</title>
+  
+  <!-- CSS Dependencies -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Barlow:100,200,300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+  
+  <style>
+    /* Swapp Technologies Design Theme Integration */
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #818cf8;
+      --dark-bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --warning-color: #ff9f1c;
+      --success-color: #10b981;
+    }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background-color: var(--dark-bg);
+      color: var(--text-main);
+      padding-top: 80px; /* Offset for fixed navbar */
+      overflow-x: hidden;
+    }
+
+    /* Navbar Styling (Swapp Tech Style + StaticGhost Branding) */
+    .navbar {
+      background-color: rgba(11, 15, 25, 0.95) !important;
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0.75rem 2rem;
+      transition: all 0.3s;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .navbar-logo img {
+      height: 2.8rem;
+      border-radius: 6px;
+      border: 1px solid var(--primary);
+    }
+
+    .navbar-caption {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff !important;
+      text-decoration: none !important;
+    }
+
+    .navbar-nav .nav-link {
+      color: var(--text-muted) !important;
+      font-weight: 500;
+      font-size: 0.95rem;
+      margin-left: 1.25rem;
+      transition: color 0.2s;
+    }
+
+    .navbar-nav .nav-link:hover {
+      color: #fff !important;
+    }
+
+    .navbar-btn-portal {
+      background: var(--primary);
+      color: #fff !important;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      text-decoration: none;
+      transition: background 0.2s;
+      margin-left: 1.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .navbar-btn-portal:hover {
+      background: var(--primary-hover);
+      text-decoration: none;
+    }
+
+    /* Hero Section */
+    .hero-section {
+      position: relative;
+      padding: 6rem 0;
+      background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.15) 0%, transparent 60%);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 800;
+      line-height: 1.15;
+      color: #fff;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 2.5rem;
+    }
+
+    .btn-cta {
+      background: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      padding: 0.85rem 2rem;
+      border-radius: 6px;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-cta:hover {
+      background: var(--primary-hover);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary-cta {
+      background: transparent;
+      color: #fff;
+      font-weight: 700;
+      padding: 0.85rem 2rem;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      transition: all 0.2s;
+      margin-left: 1rem;
+    }
+
+    .btn-secondary-cta:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+
+    .hero-image-wrap img {
+      width: 100%;
+      border-radius: 12px;
+      border: 1px solid var(--card-border);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Value Propositions / Grid */
+    .vps-section {
+      padding: 6rem 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-tag {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--primary);
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 2.25rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .vp-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 2.5rem;
+      border-radius: 10px;
+      height: 100%;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .vp-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary);
+    }
+
+    .vp-icon {
+      font-size: 2.5rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      display: inline-block;
+    }
+
+    .vp-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .vp-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    /* Features / Mode Section */
+    .features-section {
+      padding: 6rem 0;
+      background: rgba(17, 24, 39, 0.3);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .feature-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .feature-list li {
+      position: relative;
+      padding-left: 1.75rem;
+      margin-bottom: 1rem;
+      font-size: 1.05rem;
+      color: var(--text-main);
+    }
+
+    .feature-list li::before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      color: var(--success-color);
+      font-weight: 700;
+    }
+
+    /* Pricing & Contact Section (Swapp Tech Solutions Style Integration) */
+    .extPricingTables {
+      padding: 6rem 0;
+      background-color: var(--dark-bg);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .extPricingTables .display-2 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .extPricingTables .display-5 {
+      font-size: 1.15rem;
+      color: var(--text-main);
+      line-height: 1.8;
+    }
+
+    .extPricingTables .display-7 {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+    }
+
+    .extPricingTables .table-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 3rem;
+      min-height: 380px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .extPricingTables .table-purchase svg {
+      height: 3rem;
+      width: 3rem;
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+    }
+
+    .extPricingTables .btn-border {
+      background: transparent;
+      border: 2px solid var(--warning-color);
+      color: var(--warning-color) !important;
+      font-weight: 700;
+      border-radius: 6px;
+      padding: 0.75rem 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .extPricingTables .btn-border:hover {
+      background: var(--warning-color);
+      color: #fff !important;
+      text-decoration: none;
+    }
+
+    /* Social Column Wrap in pricing table */
+    .extPricingTables .soc {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .extPricingTables .soc a {
+      display: flex;
+      align-items: center;
+      padding: 1.1rem 2rem;
+      border-radius: 6px;
+      color: #fff !important;
+      text-decoration: none !important;
+      font-weight: 700;
+      transition: transform 0.2s, opacity 0.2s;
+      position: relative;
+      font-size: 1.05rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    }
+
+    .extPricingTables .soc a:hover {
+      transform: translateY(-2px);
+      opacity: 0.95;
+      color: #fff !important;
+    }
+
+    .extPricingTables .soc-ico {
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      position: absolute;
+      left: 2rem;
+    }
+
+    .extPricingTables .soc-text {
+      width: 100%;
+      text-align: center;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .fb-wrap { background: #3d6ea7; }
+    .tw-wrap { background: #00aced; }
+    .li-wrap { background: #1d6288; }
+    .c-wrap { background: #c13584; }
+    .insta-gradient {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+    }
+
+    /* Footer Styling (Swapp Tech Style) */
+    .footer2 {
+      padding: 5rem 0 3rem 0;
+      background-color: var(--dark-bg);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .footer2 .navbar-brand {
+      margin-bottom: 2rem;
+    }
+
+    .footer2 .navbar-logo img {
+      height: 3.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--primary);
+    }
+
+    .footer2 h5.items a {
+      color: var(--text-muted) !important;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s;
+      text-decoration: none;
+    }
+
+    .footer2 h5.items a:hover {
+      color: #fff !important;
+    }
+
+    .footer2 .form-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .footer2 .form-control {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: #fff;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      font-size: 0.9rem;
+    }
+
+    .footer2 .form-control::placeholder {
+      color: var(--text-muted);
+    }
+
+    .footer2 .btn-success {
+      background: var(--primary);
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem 1.25rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    .footer2 .btn-success:hover {
+      background: var(--primary-hover);
+    }
+
+    .social-list {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1.25rem;
+      padding: 1.5rem 0;
+    }
+
+    .soc-item a {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      transition: all 0.2s;
+    }
+
+    .soc-item a:hover {
+      color: #fff;
+      border-color: var(--primary);
+      background: var(--primary);
+    }
+
+    .footer-copyright {
+      padding: 2rem 0;
+      background: var(--dark-bg);
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container-fluid">
+      <div class="navbar-brand">
+        <span class="navbar-logo">
+          <a href="#">
+            <img src="./src/logo.jpg" alt="StaticGhost Logo">
+          </a>
+        </span>
+        <span class="mbr-regular navbar-caption-wrap">
+          <a class="navbar-caption" href="https://swapp.solutions">Swapp Technologies LLC</a>
+        </span>
+      </div>
+      
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ml-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.swapp.solutions">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.swapp.solutions/Case_Studies.html">Case Studies</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://github.com/Swapp-Technologies-LLC/staticGhost">GitHub</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="https://www.swapp.solutions/FAQs.html">FAQs</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#extPricingTables9-7p">Contact Us</a>
+          </li>
+          <li class="nav-item">
+            <a class="navbar-btn-portal" href="https://swapptech-client-portal.hbportal.co/app/">Client Portal</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <span class="section-tag">Product Release</span>
+          <h1 class="hero-title">Ghost CMS power.<br>Zero hosting bills.</h1>
+          <p class="hero-subtitle">Publish Ghost blogs for free on GitHub Pages, Netlify, or Vercel without losing your custom website's design, layout, or logos.</p>
+          <div class="d-flex align-items-center">
+            <a href="https://github.com/Swapp-Technologies-LLC/staticGhost" class="btn btn-cta">Get Started on GitHub</a>
+            <a href="#vps" class="btn btn-secondary-cta">Explore Features</a>
+          </div>
+        </div>
+        <div class="col-lg-6 hero-image-wrap text-center">
+          <img src="./src/logo.jpg" alt="StaticGhost Preview" style="max-width: 420px; border-radius: 20px;">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUE PROPOSITIONS -->
+  <section class="vps-section" id="vps">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Value Propositions</span>
+        <h2 class="section-title">Why Use StaticGhost?</h2>
+      </div>
+      <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="vp-card">
+            <span class="vp-icon">💰</span>
+            <h3 class="vp-title">$0/Month Hosting Bills</h3>
+            <p class="vp-desc">Stop paying monthly server fees for blog hosting. Export Ghost posts to static HTML and host them for free on GitHub Pages, Netlify, or Cloudflare Pages.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="vp-card">
+            <span class="vp-icon">🎨</span>
+            <h3 class="vp-titleSeamless">Seamless Design Ingestion</h3>
+            <p class="vp-desc">No more mismatched blogs! Ingest your main website’s exact header, footer, logo, and CSS so your blog feels like a natural extension of your brand.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+          <div class="vp-card">
+            <span class="vp-icon">🛡️</span>
+            <h3 class="vp-title">DDoS-Proof Security</h3>
+            <p class="vp-desc">Static HTML pages have zero backend database to hack or crash. Enjoy sub-second page loads and 100% uptime even under heavy viral traffic spikes.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+          <div class="vp-card">
+            <span class="vp-icon">💸</span>
+            <h3 class="vp-title">Affiliate Compliance</h3>
+            <p class="vp-desc">Monetize your posts effortlessly. Automatically tag product links with rel="sponsored nofollow" for instant Google SEO compliance and revenue tracking.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+          <div class="vp-card">
+            <span class="vp-icon">📂</span>
+            <h3 class="vp-title">Multi-Project Profiles</h3>
+            <p class="vp-desc">Manage ten client or project blogs from one desktop app. Each project gets its own Docker container, persistent volume, custom layout, and target repository.</p>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-6 mb-4 mb-lg-0">
+          <div class="vp-card">
+            <span class="vp-icon">🔍</span>
+            <h3 class="vp-title">Zero-Server Static Search</h3>
+            <p class="vp-desc">Pagefind integration builds an instant, client-side search index during export. Readers search posts in sub-milliseconds without external server requirements.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES / MODES -->
+  <section class="features-section">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6 mb-5 mb-lg-0">
+          <h2 class="section-title mb-4">Two Powerful Modes. One Interface.</h2>
+          <p class="text-muted mb-4">StaticGhost packages the entire local-to-static lifecycle into a desktop application built with Electron, Node.js, and Docker.</p>
+          <ul class="feature-list">
+            <li><strong>Mode A — Dynamic Docker</strong>: isolated containers, dedicated ports, and persistent volumes per blog profile running locally.</li>
+            <li><strong>Mode B — Static HTML Exporter</strong>: pure HTML/CSS output with zero server overhead ready to publish to Git.</li>
+            <li><strong>Build-Time AES-256 Encryption</strong>: Protect private posts securely without server session cookies or database lookups.</li>
+            <li><strong>Giscus GitHub Comments</strong>: Free, secure, zero-database commenting threads integrated with GitHub Discussions.</li>
+            <li><strong>Automated RSS & Sitemap XML</strong>: Instant sitemaps and feed reader indexing generated right out of the box.</li>
+          </ul>
+        </div>
+        <div class="col-lg-6 text-center">
+          <div style="background: rgba(30, 41, 59, 0.4); border: 1px solid var(--card-border); border-radius: 12px; padding: 2.5rem; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.4);">
+            <h4 style="color:#fff; font-weight: 700; margin-bottom: 1rem; font-size: 1.1rem; text-transform: uppercase; color: var(--secondary);">✨ Giving Back to Open Source</h4>
+            <p style="font-size: 0.92rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 1.5rem;">We strongly believe in supporting the open-source ecosystem that makes this tool possible.</p>
+            <p style="font-size: 0.95rem; line-height: 1.6; font-style: italic; color: #fff; border-left: 2px solid var(--primary); padding-left: 1rem; margin-bottom: 0;">"20% of all sponsorship and donation funds received via GitHub Sponsors, Open Collective, and Buy Me a Coffee are automatically re-donated back to the Ghost Foundation, Electron, Pagefind, and our core open-source dependency maintainers!"</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING & CONTACT SECTION (Swapp Tech Layout) -->
+  <section class="extPricingTables cid-sj7KgKIE2H" id="extPricingTables9-7p">
+      <div class="container-fluid">
+          <h2 class="mbr-fonts-style mbr-section-title align-center mbr-light display-2 text-center"><strong>Work</strong> on a <strong>Solution</strong> with <strong>Swapp</strong></h2>
+          <h3 class="mbr-fonts-style mbr-section-subtitle align-center mbr-light pt-2 display-7 text-center">You can contact us in multiple ways!</h3>
+          <br>
+          <div class="row text-center justify-content-center">
+              <div class="col-xl-6 col-lg-6 col-md-6 col-12 mb-4 mb-md-0">
+                  <div class="table-wrap">
+                      <br>
+                      <div class="table-purchase">
+                          <svg class="svg-inline--fa fa-phone align-center amp-iconfont ico-color" data-prefix="fas" data-icon="phone" role="img" viewBox="0 0 512 512" aria-hidden="true" data-fa-i2svg=""><path fill="currentColor" d="M160.2 25C152.3 6.1 131.7-3.9 112.1 1.4l-5.5 1.5c-64.6 17.6-119.8 80.2-103.7 156.4 37.1 175 174.8 312.7 349.8 349.8 76.3 16.2 138.8-39.1 156.4-103.7l1.5-5.5c5.4-19.7-4.7-40.3-23.5-48.1l-97.3-40.5c-16.5-6.9-35.6-2.1-47 11.8l-38.6 47.2C233.9 335.4 177.3 277 144.8 205.3L189 169.3c13.9-11.3 18.6-30.4 11.8-47L160.2 25z"></path></svg>
+                          <br>
+                          <h1 class="table-pricing mbr-fonts-style display-2"><strong>Contact Swapp</strong><strong><br></strong></h1>
+                      </div>
+                      <div class="card-box">
+                          <br>
+                          <p class="mbr-text mbr-fonts-style align-center display-5">Email: <a href="mailto:contact@swapp.solutions">contact@swapp.solutions</a><br>Office: <a href="tel:+1 (443) 312-9832">+1 (443) 312-9832</a><br>Cell: <a href="tel:+1 (443) 906-3830">+1 (443) 906-3830</a></p>
+                      </div>
+                      <br>
+                      <div class="mbr-section-btn text-center pb-4"><a href="mailto:contact@swapp.solutions" class="btn-border btn btn-bgr btn-warning display-4">Send a Message Via Email</a></div>
+                  </div>
+              </div>
+              <div class="col-xl-6 col-lg-6 col-md-6 col-12">
+                  <div class="table-wrap">
+                      <div class="soc">
+                      <a href="https://www.facebook.com/swappTech/" class="fb-wrap">
+                          <div class="soc-ico">
+                              <i class="fab fa-facebook-f"></i>
+                          </div>
+                          <span class="soc-text">Facebook</span>
+                      </a>
+                      <a href="https://twitter.com/SwappTechLLC" class="tw-wrap">
+                          <div class="soc-ico">
+                              <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" style="vertical-align: middle;"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                          </div>
+                          <span class="soc-text">Twitter</span>
+                      </a>
+                      <a href="https://www.linkedin.com/company/swapp-technologies-llc/" class="li-wrap">
+                          <div class="soc-ico">
+                              <i class="fab fa-linkedin-in"></i>
+                          </div>
+                          <span class="soc-text">Linkedin</span>
+                      </a>
+                      <a href="https://www.instagram.com/swapp_tech_llc/" class="c-wrap insta-gradient">
+                          <div class="soc-ico">
+                              <i class="fab fa-instagram"></i>
+                          </div>
+                          <span class="soc-text">Instagram</span>
+                      </a>
+                  </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- FOOTER 1 (Swapp Tech Style) -->
+  <section class="footer2" id="footer003-8g">
+      <div class="container">
+          <div class="row justify-content-center align-items-center">
+              <div class="col-12 col-lg-4 col-md-12 align-left mb-4 mb-lg-0">
+                  <div class="navbar-brand">
+                      <span class="navbar-logo">
+                          <img src="./src/logo.jpg" alt="StaticGhost Logo" style="height: 3.5rem; border-radius: 8px;">
+                      </span>
+                  </div>
+              </div>
+              <div class="col-12 col-lg-4 col-md-6 align-left mb-4 mb-lg-0">
+                  <h5 class="mbr-fonts-style items mbr-semibold pb-2 display-4"><a href="https://www.swapp.solutions/FAQs.html" class="text-primary">Frequently Asked Questions</a></h5>
+                  <h5 class="mbr-fonts-style items mbr-semibold pb-2 display-4"><a href="#extPricingTables9-7p" class="text-primary">Contact Us</a></h5>
+                  <h5 class="mbr-fonts-style items mbr-semibold pb-2 display-4"><a href="https://github.com/Swapp-Technologies-LLC/staticGhost" class="text-primary">GitHub Code Repository</a></h5>
+                  <h5 class="mbr-fonts-style items mbr-semibold pb-2 display-4"><a href="https://www.swapp.solutions/Case_Studies.html" class="text-primary">Case Studies</a></h5>
+              </div>
+              <div class="col-12 col-lg-4 col-md-12">
+                  <h5 class="mbr-fonts-style align-left form-title mbr-semibold pb-3 display-4">Sign up for our Newsletter</h5>
+                  <form action="mailto:contact@swapp.solutions" method="POST" enctype="text/plain">
+                      <div class="form-row align-items-center">
+                          <div class="col form-group m-0">
+                              <input type="email" name="email" placeholder="Email" class="form-control" required="required">
+                          </div>
+                          <div class="col-auto">
+                              <button type="submit" class="btn btn-success px-4">✓</button>
+                          </div>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </section>
+
+  <!-- SOCIAL LIST FOOTER -->
+  <section class="footer-copyright">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6 text-md-left text-center mb-3 mb-md-0">
+          <p class="m-0">© Copyright 2026 Swapp Technologies LLC - All Rights Reserved</p>
+        </div>
+        <div class="col-md-6 text-md-right text-center">
+          <div class="d-inline-flex gap-3">
+            <a href="https://www.instagram.com/swapp_tech_llc/" target="_blank" style="color: var(--text-muted); margin-left: 1rem;"><i class="fab fa-instagram"></i> Instagram</a>
+            <a href="https://www.linkedin.com/company/swapp-technologies-llc/" target="_blank" style="color: var(--text-muted); margin-left: 1rem;"><i class="fab fa-linkedin"></i> LinkedIn</a>
+            <a href="https://www.facebook.com/swappTech/" target="_blank" style="color: var(--text-muted); margin-left: 1rem;"><i class="fab fa-facebook"></i> Facebook</a>
+            <a href="https://twitter.com/SwappTechLLC" target="_blank" style="color: var(--text-muted); margin-left: 1rem;"><i class="fab fa-twitter"></i> Twitter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- JS Dependencies -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/b8beb7e326.js" crossorigin="anonymous"></script>
+</body>
+</html>
