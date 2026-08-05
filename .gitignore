@@ -9,5 +9,6 @@ themes/*.zip            # any zip you might place locally
 # Unwanted markdown files (adjust the names if you only want to ignore specific ones)
 *.md
 !README.md       # keep README tracked (the exclamation negates the previous rule)
+!DEVELOPMENT.md  # track local development guide
 *.zip
 *.ai
