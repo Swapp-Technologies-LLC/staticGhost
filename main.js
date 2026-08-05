@@ -199,7 +199,9 @@ ipcMain.handle('export-static-site', async (event, config) => {
     const posts = await fetcher.fetchAllPosts();
 
     const ingestor = new DesignIngestor({
-      customLayoutHtml: config.customLayoutHtml,
+      customLayoutHtml: config.customPostLayoutHtml || config.customLayoutHtml,
+      customIndexLayoutHtml: config.customIndexLayoutHtml,
+      customPostLayoutHtml: config.customPostLayoutHtml,
       siteTitle: config.siteTitle || 'My Blog',
       siteUrl: config.siteUrl || 'https://username.github.io/blog',
       enableAffiliateAutoTag: config.enableAffiliateAutoTag !== false,
@@ -355,7 +357,7 @@ ipcMain.handle('export-static-site', async (event, config) => {
       `,
       excerpt: 'Latest updates and product recommendations.',
       published_at: new Date().toISOString()
-    });
+    }, true);
 
     fs.writeFileSync(path.join(outputDir, 'index.html'), homepageHtml, 'utf8');
 

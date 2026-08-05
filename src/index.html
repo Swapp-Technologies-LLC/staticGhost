@@ -195,13 +195,25 @@
           <p>Upload or paste this specific project's HTML header, logo image URL, and brand styling. <a href="https://github.com/Swapp-Technologies-LLC/staticGhost#-design-ingestion--custom-layouthtml-guide" class="external-link" style="color: #818cf8; text-decoration: underline;">How to create layout.html ↗</a></p>
 
           <div class="button-group">
-            <button class="btn btn-outline" id="btn-upload-layout">📁 Upload layout.html for this Project</button>
-            <button class="btn btn-outline" id="btn-save-project-layout">Save Layout & Settings</button>
+            <button class="btn btn-outline" id="btn-save-project-layout">Save Layouts & Settings</button>
           </div>
 
-          <div class="form-group margin-top">
-            <label>Project Custom HTML Layout Template:</label>
-            <textarea id="layout-code-input" class="form-control code-editor" rows="12"></textarea>
+          <div class="grid-2 margin-top">
+            <div class="form-group">
+              <label>Main Blog Index Layout Template (index.html):</label>
+              <div style="margin-bottom: 0.5rem;">
+                <button class="btn btn-outline btn-sm" id="btn-upload-layout-index" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">📁 Upload layout-index.html</button>
+              </div>
+              <textarea id="layout-index-code-input" class="form-control code-editor" rows="12" placeholder="<!-- GHOST_CONTENT --> placeholder required..."></textarea>
+            </div>
+
+            <div class="form-group">
+              <label>Individual Article Layout Template (post.html):</label>
+              <div style="margin-bottom: 0.5rem;">
+                <button class="btn btn-outline btn-sm" id="btn-upload-layout-post" style="font-size: 0.75rem; padding: 0.25rem 0.5rem;">📁 Upload layout-post.html</button>
+              </div>
+              <textarea id="layout-post-code-input" class="form-control code-editor" rows="12" placeholder="<!-- GHOST_CONTENT --> placeholder required..."></textarea>
+            </div>
           </div>
         </div>
       </section>

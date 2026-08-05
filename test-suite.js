@@ -31,7 +31,13 @@ async function runVerificationTests() {
   console.assert(processedHtml.includes('⏱️'), 'Should contain reading time calculation');
   console.assert(processedHtml.includes('Swapp Technologies LLC'), 'Should contain Swapp Technologies LLC footer signature');
   console.assert(processedHtml.includes('Donate to Ghost'), 'Should contain Ghost donation link');
-  console.log('✓ Affiliate link auto-tagging and footer signature verified successfully!');
+  
+  // Index Layout Verification
+  const indexHtml = ingestor.processPostToHtml({ title: 'Latest Articles', html: '<h2>List of Posts</h2>' }, true);
+  console.assert(indexHtml.includes('<h2>List of Posts</h2>'), 'Should output content for index page');
+  console.assert(!indexHtml.includes('⏱️'), 'Index page should not contain reading time calculation');
+  console.assert(!indexHtml.includes('Sponsored / Affiliate Disclosure'), 'Index page should not contain disclosure badge');
+  console.log('✓ Affiliate link auto-tagging, footer signature, and index page processing verified successfully!');
 
   // Form Redirector Verification
   const redirectIngestor = new DesignIngestor({

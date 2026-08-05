@@ -15,7 +15,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const dockerVolumeInput = document.getElementById('docker-volume-input');
   const githubRepoInput = document.getElementById('github-repo-input');
   const giscusRepoInput = document.getElementById('giscus-repo-input');
-  const layoutCodeInput = document.getElementById('layout-code-input');
+  const layoutIndexCodeInput = document.getElementById('layout-index-code-input');
+  const layoutPostCodeInput = document.getElementById('layout-post-code-input');
   const chkAutoAffiliate = document.getElementById('chk-auto-affiliate');
   const affiliateDomainsInput = document.getElementById('affiliate-domains-input');
   const chkAutoFormRedirect = document.getElementById('chk-auto-form-redirect');
@@ -74,7 +75,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (dockerVolumeInput) dockerVolumeInput.value = p.volumeName || `ghost_vol_${containerSlug}`;
     if (githubRepoInput) githubRepoInput.value = p.githubRepo || '';
     if (giscusRepoInput) giscusRepoInput.value = p.giscusRepo || '';
-    if (layoutCodeInput && p.customLayoutHtml) layoutCodeInput.value = p.customLayoutHtml;
+    if (layoutIndexCodeInput) {
+      layoutIndexCodeInput.value = p.customIndexLayoutHtml || p.customLayoutHtml || '';
+    }
+    if (layoutPostCodeInput) {
+      layoutPostCodeInput.value = p.customPostLayoutHtml || p.customLayoutHtml || '';
+    }
 
     if (chkAutoAffiliate) chkAutoAffiliate.checked = p.enableAffiliateAutoTag !== false;
     if (affiliateDomainsInput) affiliateDomainsInput.value = p.affiliateDomains || 'amazon.com, amzn.to, bestbuy.com, shareasale.com, partnerstack.com';
@@ -94,7 +100,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     p.volumeName = dockerVolumeInput.value;
     p.githubRepo = githubRepoInput.value;
     p.giscusRepo = giscusRepoInput.value;
-    p.customLayoutHtml = layoutCodeInput ? layoutCodeInput.value : '';
+    p.customIndexLayoutHtml = layoutIndexCodeInput ? layoutIndexCodeInput.value : '';
+    p.customPostLayoutHtml = layoutPostCodeInput ? layoutPostCodeInput.value : '';
+    p.customLayoutHtml = p.customPostLayoutHtml; // fallback for backwards compatibility
 
     p.enableAffiliateAutoTag = chkAutoAffiliate ? chkAutoAffiliate.checked : true;
     p.affiliateDomains = affiliateDomainsInput ? affiliateDomainsInput.value : '';
@@ -159,7 +167,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       siteUrl: `https://username.github.io/${slug}`,
       githubRepo: `https://github.com/username/${slug}.git`,
       giscusRepo: '',
-      customLayoutHtml: ''
+      customLayoutHtml: '',
+      customIndexLayoutHtml: '',
+      customPostLayoutHtml: ''
     };
     profiles.push(newProf);
     if (window.ghostAppAPI) window.ghostAppAPI.saveProfiles(profiles);
@@ -275,13 +285,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const btnUploadLayout = document.getElementById('btn-upload-layout');
-  if (btnUploadLayout) {
-    btnUploadLayout.addEventListener('click', async () => {
+  const btnUploadLayoutIndex = document.getElementById('btn-upload-layout-index');
+  if (btnUploadLayoutIndex) {
+    btnUploadLayoutIndex.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
         const fileData = await window.ghostAppAPI.selectFile();
-        if (fileData && fileData.content && layoutCodeInput) {
-          layoutCodeInput.value = fileData.content;
+        if (fileData && fileData.content && layoutIndexCodeInput) {
+          layoutIndexCodeInput.value = fileData.content;
+          saveCurrentProfileData();
+        }
+      }
+    });
+  }
+
+  const btnUploadLayoutPost = document.getElementById('btn-upload-layout-post');
+  if (btnUploadLayoutPost) {
+    btnUploadLayoutPost.addEventListener('click', async () => {
+      if (window.ghostAppAPI) {
+        const fileData = await window.ghostAppAPI.selectFile();
+        if (fileData && fileData.content && layoutPostCodeInput) {
+          layoutPostCodeInput.value = fileData.content;
           saveCurrentProfileData();
         }
       }
@@ -338,7 +361,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         siteTitle: siteTitleInput.value,
         siteUrl: siteUrlInput.value,
         giscusRepo: giscusRepoInput.value,
-        customLayoutHtml: layoutCodeInput ? layoutCodeInput.value : '',
+        customIndexLayoutHtml: layoutIndexCodeInput ? layoutIndexCodeInput.value : '',
+        customPostLayoutHtml: layoutPostCodeInput ? layoutPostCodeInput.value : '',
+        customLayoutHtml: layoutPostCodeInput ? layoutPostCodeInput.value : '',
         enableAffiliateAutoTag: document.getElementById('chk-auto-affiliate').checked,
         affiliateDomains: document.getElementById('affiliate-domains-input').value.split(',').map(d => d.trim()),
         enableFormRedirect: document.getElementById('chk-auto-form-redirect').checked,

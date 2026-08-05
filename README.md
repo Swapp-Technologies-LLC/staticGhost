@@ -290,6 +290,15 @@ Always keep your static blog files in a **separate repository** (e.g. `my-blog-r
   - **SEO Benefit**: Lower. Search engines treat subdomains as separate web properties, meaning you must build domain authority for the blog independently.
   - **GitHub Pages Setup**: Configure a custom CNAME DNS record for `blog` pointing to your user page (e.g. `username.github.io`) and save it under your repository settings.
 
+### ⚠️ GitHub Pages Usage Limits & Guidelines
+If you host your static blog using GitHub Pages, keep in mind the following [official platform constraints](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits):
+- **Size Limits**: Source repositories and published websites are recommended to be under **1 GB** in total size.
+- **Traffic Bandwidth**: Sites are subject to a soft bandwidth limit of **100 GB per month**.
+- **Build Rate Limit**: GitHub enforces a soft build limit of **10 builds per hour**. Since StaticGhost compiles and builds files locally before pushing a complete directory commit, you generally will not hit this limit, but avoid continuous rapid exports.
+
+> [!TIP]
+> If your blog expects heavy media usage (e.g., gigabytes of raw images/video uploads) or massive monthly traffic exceeding 100 GB, we recommend deploying to **Netlify, Vercel, or Cloudflare Pages** which offer larger free-tier bandwidth allocations.
+
 ---
 
 ## 🔒 Security Architecture & Credentials Management
