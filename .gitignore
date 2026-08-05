@@ -6,8 +6,17 @@ node_modules/
 # Theme files (license‑restricted)
 themes/themeforest-*/   # the whole folder
 themes/*.zip            # any zip you might place locally
-# Unwanted markdown files (adjust the names if you only want to ignore specific ones)
+# Unwanted markdown files
 *.md
-!README.md       # keep README tracked (the exclamation negates the previous rule)
+!README.md
+!DEVELOPMENT.md
 *.zip
 *.ai
+
+# Electron build distributions
+dist/
+
+# Test exports
+test-export-output/
+
+
