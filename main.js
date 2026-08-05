@@ -19,6 +19,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 650,
     titleBarStyle: 'default',
+    icon: path.join(__dirname, 'src', 'favicon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
