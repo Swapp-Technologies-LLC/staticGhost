@@ -12,3 +12,11 @@ themes/*.zip            # any zip you might place locally
 !DEVELOPMENT.md  # track local development guide
 *.zip
 *.ai
+
+# Electron build distributions
+dist/
+
+# Test exports
+test-export-output/
+
+
