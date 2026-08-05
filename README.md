@@ -99,10 +99,19 @@ Before running the application, make sure you have the following installed on yo
    npm test
    ```
 
-4. Launch the Desktop GUI:
+4. **Run in Development Mode**:
+   Launch the desktop interface locally from source:
    ```bash
    npm start
    ```
+
+5. **Run in Production Mode (Install Standalone App)**:
+   For standard everyday use (launching directly from your Start Menu or Desktop shortcut without needing Node or terminal commands):
+   - Build the Windows executable installer:
+     ```bash
+     npm run dist
+     ```
+   - Open the generated `dist/` directory and run the **`StaticGhost Setup 1.0.0.exe`** wizard to install it natively.
 
 ---
 
