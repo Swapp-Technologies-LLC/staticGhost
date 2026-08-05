@@ -6,7 +6,7 @@
 
 **A collaborative open-source creation by Swapp Technologies LLC & Google Antigravity AI**
 
-[![Created by Swapp Tech](https://img.shields.io/badge/Created%20By-Swapp%20Technologies%20LLC-6366f1?style=for-the-badge)](https://swapptech.com)
+[![Created by Swapp Tech](https://img.shields.io/badge/Created%20By-Swapp%20Technologies%20LLC-6366f1?style=for-the-badge)](https://www.swapp.solutions)
 [![Built with Antigravity](https://img.shields.io/badge/AI%20Pair%20Programmer-Google%20Antigravity-4285F4?style=for-the-badge&logo=google)](https://deepmind.google)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/swappTechOpenSource)
 [![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge)](LICENSE)
@@ -14,7 +14,7 @@
 <br/>
 
 [![Ghost](https://img.shields.io/badge/Ghost-v5.0-black?style=flat-square&logo=ghost&logoColor=white)](https://ghost.org)
-[![Electron](https://img.shields.io/badge/Electron-30.0-47848F?style=flat-square&logo=electron&logoColor=white)](https://electronjs.org)
+[![Electron](https://img.shields.io/badge/Electron-43.3-47848F?style=flat-square&logo=electron&logoColor=white)](https://electronjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-v18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Docker](https://img.shields.io/badge/Docker-24.0-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
 [![Cloudflare](https://img.shields.io/badge/Cloudflare-Pages%20%26%20Tunnels-F38020?style=flat-square&logo=cloudflare&logoColor=white)](https://cloudflare.com)
