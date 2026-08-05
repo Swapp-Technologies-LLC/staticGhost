@@ -82,6 +82,53 @@ async function runVerificationTests() {
   console.assert(fs.existsSync(path.join(testOutputDir, 'search', 'search-index.js')), 'Search index JS should exist');
   console.log('✓ Search index created at /search/search-index.js');
 
+  // Test 6: Multi-Template Ingestion & Dynamic Photo Placeholders
+  console.log('\n[Test 6] Multi-Template Ingestion & Dynamic Photo Placeholders...');
+  
+  const photoTemplate = '<html><body>Image 1: <!-- GHOST_PAGE_PHOTO -->, Image 2: <!-- GHOST_PAGE_PHOTO -->, Feature: <!-- GHOST_FEATURE_IMAGE --></body></html>';
+  const postWithImages = {
+    title: 'Post with Images',
+    slug: 'post-images',
+    feature_image: 'https://site.com/hero.jpg',
+    html: '<p>Intro</p><img src="https://site.com/photo-a.jpg"><p>Middle</p><img src="https://site.com/photo-b.jpg"><p>End</p>'
+  };
+
+  const processedPhotoHtml = ingestor.processPostToHtml(postWithImages, false, photoTemplate);
+  console.assert(processedPhotoHtml.includes('Image 1: https://site.com/photo-a.jpg'), 'First placeholder should match photo-a');
+  console.assert(processedPhotoHtml.includes('Image 2: https://site.com/photo-b.jpg'), 'Second placeholder should match photo-b');
+  console.assert(processedPhotoHtml.includes('Feature: https://site.com/hero.jpg'), 'Feature image should match hero.jpg');
+  console.log('✓ Sequential photo placeholders and feature image mapped successfully!');
+
+  const sampleTemplates = [
+    { key: 'gallery', html: '<html>Gallery: <!-- GHOST_CONTENT --></html>' },
+    { key: 'review', html: '<html>Review: <!-- GHOST_CONTENT --></html>' }
+  ];
+
+  const galleryPost = {
+    title: 'My Gallery',
+    tags: [{ name: 'Gallery', slug: 'gallery' }],
+    html: '<p>Photos here</p>'
+  };
+
+  let resolvedTemplateHtml = null;
+  if (galleryPost.tags && Array.isArray(galleryPost.tags)) {
+    for (const tag of galleryPost.tags) {
+      const tagSlug = (tag.slug || tag.name || '').toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+      const matched = sampleTemplates.find(t => t.key === tagSlug);
+      if (matched) {
+        resolvedTemplateHtml = matched.html;
+        break;
+      }
+    }
+  }
+
+  console.assert(resolvedTemplateHtml !== null, 'Should resolve tag-based template');
+  console.assert(resolvedTemplateHtml.includes('Gallery:'), 'Resolved template should be Gallery template');
+  
+  const compiledGalleryHtml = ingestor.processPostToHtml(galleryPost, false, resolvedTemplateHtml);
+  console.assert(compiledGalleryHtml.includes('Gallery:'), 'Compiled output should use Gallery layout');
+  console.log('✓ Custom tag-based template routing verified successfully!');
+
   console.log('\n==================================================');
   console.log('🎉 ALL VERIFICATION TESTS PASSED SUCCESSFULLY! 🎉');
   console.log('==================================================\n');

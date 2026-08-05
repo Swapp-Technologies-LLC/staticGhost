@@ -373,8 +373,33 @@ ipcMain.handle('export-static-site', async (event, config) => {
 
     fs.writeFileSync(path.join(outputDir, 'index.html'), homepageHtml, 'utf8');
 
+    const templates = config.postTemplates || [];
+
     posts.forEach(post => {
-      const postHtml = ingestor.processPostToHtml(post);
+      let selectedTemplateHtml = null;
+
+      // 1. Match by custom_template
+      if (post.custom_template) {
+        const cleanCustom = post.custom_template.replace(/^custom-/, '').toLowerCase();
+        const matched = templates.find(t => t.key === post.custom_template || t.key === cleanCustom);
+        if (matched) {
+          selectedTemplateHtml = matched.html;
+        }
+      }
+
+      // 2. Match by Tags
+      if (!selectedTemplateHtml && post.tags && Array.isArray(post.tags)) {
+        for (const tag of post.tags) {
+          const tagSlug = (tag.slug || tag.name || '').toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+          const matched = templates.find(t => t.key === tagSlug || t.key === tag.name.toLowerCase());
+          if (matched) {
+            selectedTemplateHtml = matched.html;
+            break;
+          }
+        }
+      }
+
+      const postHtml = ingestor.processPostToHtml(post, false, selectedTemplateHtml);
       fs.writeFileSync(path.join(outputDir, `${post.slug}.html`), postHtml, 'utf8');
     });
 

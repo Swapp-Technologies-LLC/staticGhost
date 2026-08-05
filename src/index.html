@@ -228,6 +228,32 @@
               <textarea id="layout-post-code-input" class="form-control code-editor" rows="12" placeholder="<!-- GHOST_CONTENT --> placeholder required..."></textarea>
             </div>
           </div>
+
+          <!-- Multiple Post Templates Override Manager -->
+          <div class="margin-top pt-4" style="border-top: 1px solid var(--border-color);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+              <h3 style="margin: 0; font-size: 1.25rem;">📄 Additional Custom Article Templates</h3>
+              <button class="btn btn-primary" id="btn-add-post-template" style="font-size: 0.85rem; padding: 0.5rem 1rem;">➕ Add Custom Template</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1.25rem;">
+              Create alternative layouts for different post styles. Name a template key to match a Ghost custom template name (e.g. <code>custom-gallery</code>) or a post tag (e.g. <code>gallery</code>). Placeholders like <code>&lt;!-- GHOST_PAGE_PHOTO --&gt;</code> will be sequentially mapped in each layout.
+            </p>
+            
+            <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; background: rgba(0,0,0,0.2);">
+              <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
+                <thead>
+                  <tr style="border-bottom: 1px solid var(--border-color); background: rgba(255,255,255,0.02);">
+                    <th style="padding: 0.75rem 1rem; color: var(--text-muted); font-weight: 600;">Template Name</th>
+                    <th style="padding: 0.75rem 1rem; color: var(--text-muted); font-weight: 600;">ID / Key Match</th>
+                    <th style="padding: 0.75rem 1rem; color: var(--text-muted); font-weight: 600; text-align: right;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="post-templates-tbody">
+                  <!-- Dynamic template rows inserted here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -362,6 +388,37 @@
       <div class="button-group margin-top" style="justify-content: flex-end;">
         <button class="btn btn-outline" id="btn-cancel-modal">Cancel</button>
         <button class="btn btn-primary" id="btn-confirm-add-project">Create Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add/Edit Custom Post Template Modal -->
+  <div id="template-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card" style="max-width: 650px; width: 90%;">
+      <h3 id="template-modal-title" style="margin-top: 0; margin-bottom: 0.5rem; font-size: 1.25rem; color: #fff;">📄 Custom Post Template</h3>
+      <p style="font-size: 0.88rem; color: #94a3b8; margin-top: 0; margin-bottom: 1.25rem;">Define a custom layout template that will be used for specific article/post styles.</p>
+      
+      <input type="hidden" id="template-modal-index" value="">
+
+      <div class="form-group">
+        <label style="color: #f8fafc; font-weight: 600;">Template Friendly Name:</label>
+        <input type="text" id="template-name-input" class="form-control" placeholder="e.g. Photo Gallery Layout" style="margin-top: 0.35rem;">
+      </div>
+
+      <div class="form-group">
+        <label style="color: #f8fafc; font-weight: 600;">ID / Key Match (Ghost Template Name or Post Tag):</label>
+        <input type="text" id="template-key-input" class="form-control" placeholder="e.g. custom-gallery or gallery" style="margin-top: 0.35rem;">
+        <small class="help-text">Matches if a post has tag matching this key, or if the Ghost custom template name matches this key.</small>
+      </div>
+
+      <div class="form-group">
+        <label style="color: #f8fafc; font-weight: 600;">HTML Layout Code:</label>
+        <textarea id="template-html-input" class="form-control code-editor" rows="10" placeholder="<!-- GHOST_CONTENT --> is required. Use <!-- GHOST_PAGE_PHOTO --> for sequential images." style="margin-top: 0.35rem; font-family: monospace;"></textarea>
+      </div>
+
+      <div class="button-group margin-top" style="justify-content: flex-end;">
+        <button class="btn btn-outline" id="btn-cancel-template-modal">Cancel</button>
+        <button class="btn btn-primary" id="btn-save-template-modal">Save Template</button>
       </div>
     </div>
   </div>

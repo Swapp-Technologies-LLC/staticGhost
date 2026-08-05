@@ -40,6 +40,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         { id: 'p1', name: 'Project A (Main Blog)', containerName: 'ghost-blog-proj-a', port: 2368, volumeName: 'ghost_vol_proj_a', siteTitle: 'Main Project Blog', siteUrl: 'https://user.github.io/blog-a', githubRepo: 'https://github.com/user/blog-a.git' }
       ];
     }
+    profiles.forEach(p => {
+      if (!p.postTemplates) {
+        p.postTemplates = [];
+      }
+    });
     renderProjectSelect();
   }
 
@@ -90,6 +95,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (affiliateDomainsInput) affiliateDomainsInput.value = p.affiliateDomains || 'amazon.com, amzn.to, bestbuy.com, shareasale.com, partnerstack.com';
     if (chkAutoFormRedirect) chkAutoFormRedirect.checked = p.enableFormRedirect === true;
     if (formRedirectUrlInput) formRedirectUrlInput.value = p.formRedirectUrl || '';
+    renderPostTemplatesList(p);
 
     checkDocker();
   }
@@ -177,7 +183,8 @@ document.addEventListener('DOMContentLoaded', async () => {
       giscusRepo: '',
       customLayoutHtml: '',
       customIndexLayoutHtml: '',
-      customPostLayoutHtml: ''
+      customPostLayoutHtml: '',
+      postTemplates: []
     };
     profiles.push(newProf);
     if (window.ghostAppAPI) window.ghostAppAPI.saveProfiles(profiles);
@@ -230,6 +237,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (titles[targetId]) {
       pageTitle.textContent = titles[targetId].title;
       pageSubtitle.textContent = titles[targetId].sub;
+    }
+    const headerLogo = document.getElementById('app-header-logo');
+    if (headerLogo) {
+      headerLogo.style.display = (targetId === 'tab-overview') ? 'block' : 'none';
     }
   }
 
@@ -442,6 +453,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         customIndexLayoutHtml: layoutIndexCodeInput ? layoutIndexCodeInput.value : '',
         customPostLayoutHtml: layoutPostCodeInput ? layoutPostCodeInput.value : '',
         customLayoutHtml: layoutPostCodeInput ? layoutPostCodeInput.value : '',
+        postTemplates: (profiles.find(p => p.id === activeProfileId)?.postTemplates || []),
         enableAffiliateAutoTag: document.getElementById('chk-auto-affiliate').checked,
         affiliateDomains: document.getElementById('affiliate-domains-input').value.split(',').map(d => d.trim()),
         enableFormRedirect: document.getElementById('chk-auto-form-redirect').checked,
@@ -494,6 +506,150 @@ document.addEventListener('DOMContentLoaded', async () => {
           deployResultBox.textContent = `Deployment error: ${res.error}`;
         }
       }
+    });
+  }
+
+  // Post Templates UI & Event Listeners
+  function renderPostTemplatesList(p) {
+    const tbody = document.getElementById('post-templates-tbody');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+    if (!p || !p.postTemplates || p.postTemplates.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3" style="padding:1rem; text-align:center; color:var(--text-muted);">No custom templates configured. Using default post.html.</td></tr>';
+      return;
+    }
+
+    p.postTemplates.forEach((t, idx) => {
+      const tr = document.createElement('tr');
+      tr.style.borderBottom = '1px solid var(--border-color)';
+      
+      const tdName = document.createElement('td');
+      tdName.style.padding = '0.75rem 1rem';
+      tdName.textContent = t.name;
+      tr.appendChild(tdName);
+
+      const tdKey = document.createElement('td');
+      tdKey.style.padding = '0.75rem 1rem';
+      tdKey.innerHTML = `<code class="badge">${t.key}</code>`;
+      tr.appendChild(tdKey);
+
+      const tdActions = document.createElement('td');
+      tdActions.style.padding = '0.75rem 1rem';
+      tdActions.style.textAlign = 'right';
+
+      const btnEdit = document.createElement('button');
+      btnEdit.className = 'btn btn-outline btn-sm';
+      btnEdit.style.fontSize = '0.75rem';
+      btnEdit.style.padding = '0.2rem 0.5rem';
+      btnEdit.style.marginRight = '0.5rem';
+      btnEdit.textContent = '✏️ Edit';
+      btnEdit.addEventListener('click', () => openTemplateModal(idx));
+      tdActions.appendChild(btnEdit);
+
+      const btnDelete = document.createElement('button');
+      btnDelete.className = 'btn btn-danger btn-sm';
+      btnDelete.style.fontSize = '0.75rem';
+      btnDelete.style.padding = '0.2rem 0.5rem';
+      btnDelete.textContent = '🗑️ Delete';
+      btnDelete.addEventListener('click', () => handleDeleteTemplate(idx));
+      tdActions.appendChild(btnDelete);
+
+      tr.appendChild(tdActions);
+      tbody.appendChild(tr);
+    });
+  }
+
+  function openTemplateModal(index) {
+    const modal = document.getElementById('template-modal');
+    const modalTitle = document.getElementById('template-modal-title');
+    const modalIndex = document.getElementById('template-modal-index');
+    const nameInput = document.getElementById('template-name-input');
+    const keyInput = document.getElementById('template-key-input');
+    const htmlInput = document.getElementById('template-html-input');
+
+    if (!modal) return;
+    
+    const p = profiles.find(item => item.id === activeProfileId);
+    if (!p) return;
+
+    nameInput.style.borderColor = '#334155';
+    keyInput.style.borderColor = '#334155';
+
+    if (index >= 0) {
+      const t = p.postTemplates[index];
+      modalTitle.textContent = '✏️ Edit Custom Template';
+      modalIndex.value = index;
+      nameInput.value = t.name || '';
+      keyInput.value = t.key || '';
+      htmlInput.value = t.html || '';
+    } else {
+      modalTitle.textContent = '➕ Add Custom Template';
+      modalIndex.value = '-1';
+      nameInput.value = '';
+      keyInput.value = '';
+      htmlInput.value = '';
+    }
+    modal.style.display = 'flex';
+  }
+
+  function handleDeleteTemplate(index) {
+    const p = profiles.find(item => item.id === activeProfileId);
+    if (!p || !p.postTemplates) return;
+    if (confirm(`Are you sure you want to delete the custom template "${p.postTemplates[index].name}"?`)) {
+      p.postTemplates.splice(index, 1);
+      saveCurrentProfileData();
+      renderPostTemplatesList(p);
+    }
+  }
+
+  const btnAddPostTemplate = document.getElementById('btn-add-post-template');
+  if (btnAddPostTemplate) {
+    btnAddPostTemplate.addEventListener('click', () => openTemplateModal(-1));
+  }
+
+  const btnCancelTemplateModal = document.getElementById('btn-cancel-template-modal');
+  if (btnCancelTemplateModal) {
+    btnCancelTemplateModal.addEventListener('click', () => {
+      document.getElementById('template-modal').style.display = 'none';
+    });
+  }
+
+  const btnSaveTemplateModal = document.getElementById('btn-save-template-modal');
+  if (btnSaveTemplateModal) {
+    btnSaveTemplateModal.addEventListener('click', () => {
+      const p = profiles.find(item => item.id === activeProfileId);
+      if (!p) return;
+
+      const idxVal = document.getElementById('template-modal-index').value;
+      const nameInput = document.getElementById('template-name-input');
+      const keyInput = document.getElementById('template-key-input');
+      const htmlInput = document.getElementById('template-html-input');
+
+      const name = nameInput.value.trim();
+      const key = keyInput.value.trim().toLowerCase().replace(/[^a-z0-9-_]/g, '-');
+      const html = htmlInput.value;
+
+      if (!name) {
+        nameInput.style.borderColor = '#ef4444';
+        return;
+      }
+      if (!key) {
+        keyInput.style.borderColor = '#ef4444';
+        return;
+      }
+
+      if (!p.postTemplates) p.postTemplates = [];
+
+      const index = parseInt(idxVal);
+      if (index >= 0) {
+        p.postTemplates[index] = { id: p.postTemplates[index].id, name, key, html };
+      } else {
+        p.postTemplates.push({ id: `tmpl_${Date.now()}`, name, key, html });
+      }
+
+      saveCurrentProfileData();
+      renderPostTemplatesList(p);
+      document.getElementById('template-modal').style.display = 'none';
     });
   }
 
