@@ -70,6 +70,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (siteTitleInput) siteTitleInput.value = p.siteTitle || p.name;
     if (siteUrlInput) siteUrlInput.value = p.siteUrl || '';
     if (ghostUrlInput) ghostUrlInput.value = `http://localhost:${p.port || 2368}`;
+    const ghostKeyInput = document.getElementById('ghost-key-input');
+    if (ghostKeyInput) ghostKeyInput.value = p.ghostApiKey || '';
     if (dockerContainerNameInput) dockerContainerNameInput.value = p.containerName || `ghost-${p.id}`;
     if (dockerPortInput) dockerPortInput.value = p.port || 2368;
     if (dockerVolumeInput) dockerVolumeInput.value = p.volumeName || `ghost_vol_${containerSlug}`;
@@ -95,6 +97,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (!p) return;
     p.siteTitle = siteTitleInput.value;
     p.siteUrl = siteUrlInput.value;
+    const ghostKeyInput = document.getElementById('ghost-key-input');
+    if (ghostKeyInput) p.ghostApiKey = ghostKeyInput.value;
     p.containerName = dockerContainerNameInput.value;
     p.port = parseInt(dockerPortInput.value) || 2368;
     p.volumeName = dockerVolumeInput.value;
@@ -345,6 +349,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Ghost Connection Test
+  const btnTestGhost = document.getElementById('btn-test-ghost');
+  const connectionStatusBox = document.getElementById('connection-status-box');
+  if (btnTestGhost && connectionStatusBox) {
+    btnTestGhost.addEventListener('click', async () => {
+      saveCurrentProfileData();
+      connectionStatusBox.style.display = 'block';
+      connectionStatusBox.style.color = '#fff';
+      connectionStatusBox.textContent = '⏳ Testing connection to Ghost...';
+
+      if (window.ghostAppAPI) {
+        const url = ghostUrlInput ? ghostUrlInput.value : 'http://localhost:2368';
+        const key = document.getElementById('ghost-key-input') ? document.getElementById('ghost-key-input').value : '';
+        const res = await window.ghostAppAPI.testGhostConnection({ baseUrl: url, apiKey: key });
+        if (res.success) {
+          connectionStatusBox.style.color = '#34d399';
+          connectionStatusBox.textContent = `✅ ${res.message}`;
+        } else {
+          connectionStatusBox.style.color = '#ef4444';
+          connectionStatusBox.textContent = `❌ Connection failed: ${res.message || res.error}`;
+        }
+      } else {
+        connectionStatusBox.style.color = '#ef4444';
+        connectionStatusBox.textContent = '❌ Ghost API not available in this environment.';
+      }
+    });
+  }
+
   // Export Static Site
   const btnRunExport = document.getElementById('btn-run-export');
   const exportResultBox = document.getElementById('export-result-box');
@@ -352,12 +384,38 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnRunExport.addEventListener('click', async () => {
       saveCurrentProfileData();
       exportResultBox.style.display = 'block';
-      exportResultBox.textContent = '⏳ Fetching Ghost content and exporting static HTML pages...';
+      exportResultBox.style.color = '#fff';
+      exportResultBox.textContent = '⏳ Verifying connection to Ghost container...';
+
+      const url = ghostUrlInput.value;
+      const key = document.getElementById('ghost-key-input') ? document.getElementById('ghost-key-input').value : '';
+
+      if (window.ghostAppAPI) {
+        if (!key) {
+          exportResultBox.style.color = '#ff9f1c';
+          exportResultBox.innerHTML = '⚠️ <strong>No Content API Key configured.</strong> Exporting layout using local mock posts...';
+          await new Promise(r => setTimeout(r, 1500));
+        } else {
+          const testRes = await window.ghostAppAPI.testGhostConnection({ baseUrl: url, apiKey: key });
+          if (!testRes.success) {
+            exportResultBox.style.color = '#ef4444';
+            exportResultBox.innerHTML = `❌ <strong>Export Failed: Cannot connect to Ghost.</strong><br>
+              <span style="font-size:0.9rem;">Reason: ${testRes.message || 'Unauthorized or container offline'}.</span><br>
+              <small style="color:#94a3b8; display:block; margin-top:0.5rem;">
+                Please verify that your Ghost container is started on port ${dockerPortInput.value || 2368} and that your Content API Key is correct.
+              </small>`;
+            return;
+          }
+        }
+      }
+
+      exportResultBox.style.color = '#fff';
+      exportResultBox.textContent = '⏳ Connection verified! Fetching Ghost content and exporting static HTML pages...';
 
       const config = {
         projectName: activeProfileId,
-        ghostUrl: ghostUrlInput.value,
-        ghostApiKey: document.getElementById('ghost-key-input') ? document.getElementById('ghost-key-input').value : '',
+        ghostUrl: url,
+        ghostApiKey: key,
         siteTitle: siteTitleInput.value,
         siteUrl: siteUrlInput.value,
         giscusRepo: giscusRepoInput.value,

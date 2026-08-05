@@ -35,6 +35,7 @@
 - [📋 Prerequisites & System Requirements](#-prerequisites--system-requirements)
 - [🛠️ Quick Start & Testing](#️-quick-start--testing)
 - [🔑 First-Time Ghost Admin Setup (Mode A)](#-first-time-ghost-admin-setup-mode-a)
+- [🔑 Ghost Content API Key Setup](#-ghost-content-api-key-setup)
 - [🎨 Design Ingestion & Custom `layout.html` Guide](#-design-ingestion--custom-layouthtml-guide)
 - [💰 Affiliate Link Ingestion & Automation](#-affiliate-link-ingestion--automation)
 - [💬 Giscus Comments Integration & Setup](#-giscus-comments-integration--setup)
@@ -121,6 +122,28 @@ When running a local Ghost instance via **Mode A (Docker)**:
    - Scroll down to the bottom and click **+ Add custom integration**.
    - Name it (e.g. `StaticGhost`) and click **Create**.
    - Copy the generated **Content API Key** and paste it into the StaticGhost app under **Overview Connection Test** or **Mode B Exporter**.
+
+
+---
+
+## 🔑 Ghost Content API Key Setup
+
+To fetch and compile posts from your local Ghost container, the StaticGhost Exporter requires a valid **Content API Key**. Without it, the exporter will fall back to exporting the template mock posts.
+
+Follow these steps to generate and connect your API key:
+
+1. **Open Ghost Admin**: Navigate to `http://localhost:2368/ghost` in your browser (make sure your project container is running).
+2. **Access Integrations**: Click the **Settings (⚙️)** gear icon in the bottom-left sidebar, then select **Integrations** under the *Advanced* menu.
+3. **Create Custom Integration**:
+   - Scroll to the bottom of the page and click **+ Add custom integration**.
+   - Set the name to `StaticGhost` and click **Create**.
+4. **Copy the Key**: Locate the **Content API key** field on the screen and copy the long hexadecimal string.
+5. **Connect to Desktop App**:
+   - Open the StaticGhost desktop app and select the **Overview & Mode** tab.
+   - Paste the copied key into the **Content API Key** input inside the *Local Ghost Connection Test* block.
+   - Click **Test Connection** to confirm a successful link.
+
+Your Content API key is automatically saved in your active project profile database (`profiles.json`) so you only need to enter it once.
 
 ---
 
