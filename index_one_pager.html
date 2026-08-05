@@ -16,9 +16,9 @@
   <style>
     /* Swapp Technologies Design Theme Integration */
     :root {
-      --primary: #6366f1;
-      --primary-hover: #4f46e5;
-      --secondary: #818cf8;
+      --primary: #149dcc;
+      --primary-hover: #0C607D;
+      --secondary: #55b4d4;
       --dark-bg: #0b0f19;
       --card-bg: #111827;
       --card-border: #1f2937;
@@ -57,11 +57,34 @@
       border: 1px solid var(--primary);
     }
 
+    .navbar-caption-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      line-height: 1.1;
+    }
+
     .navbar-caption {
-      font-size: 1.25rem;
-      font-weight: 700;
+      font-size: 1.45rem;
+      font-weight: 800;
       color: #fff !important;
       text-decoration: none !important;
+      letter-spacing: -0.01em;
+    }
+
+    .navbar-subcaption {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #10b981;
+      margin-top: 1px;
+      letter-spacing: 0.04em;
+      text-transform: none;
+      line-height: 1;
+    }
+
+    .navbar-subcaption .subcaption-highlight {
+      color: #00aced;
     }
 
     .navbar-nav .nav-link {
@@ -369,9 +392,11 @@
     }
 
     .footer2 .navbar-logo img {
-      height: 3.5rem;
-      border-radius: 8px;
+      width: 150px;
+      height: auto;
+      border-radius: 12px;
       border: 1px solid var(--primary);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
     }
 
     .footer2 h5.items a {
@@ -465,9 +490,10 @@
             <img src="./src/logo.jpg" alt="StaticGhost Logo">
           </a>
         </span>
-        <span class="mbr-regular navbar-caption-wrap">
-          <a class="navbar-caption" href="https://swapp.solutions">Swapp Technologies LLC</a>
-        </span>
+        <div class="navbar-caption-wrap">
+          <a class="navbar-caption" href="#">StaticGhost</a>
+          <span class="navbar-subcaption">by <span class="subcaption-highlight">Swapp Technologies LLC</span></span>
+        </div>
       </div>
       
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -663,7 +689,7 @@
               <div class="col-12 col-lg-4 col-md-12 align-left mb-4 mb-lg-0">
                   <div class="navbar-brand">
                       <span class="navbar-logo">
-                          <img src="./src/logo.jpg" alt="StaticGhost Logo" style="height: 3.5rem; border-radius: 8px;">
+                          <img src="./src/logo.jpg" alt="StaticGhost Logo" style="width: 150px; height: auto; border-radius: 12px;">
                       </span>
                   </div>
               </div>
