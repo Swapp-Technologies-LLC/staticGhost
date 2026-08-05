@@ -5,7 +5,9 @@
   "main": "main.js",
   "scripts": {
     "start": "npx electron .",
-    "test": "node test-suite.js"
+    "test": "node test-suite.js",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [
     "ghost",
@@ -25,6 +27,32 @@
     "node-fetch": "^2.7.0"
   },
   "devDependencies": {
-    "electron": "^43.3.0"
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3"
+  },
+  "build": {
+    "appId": "solutions.swapp.staticghost",
+    "productName": "StaticGhost",
+    "win": {
+      "target": "nsis",
+      "icon": "src/favicon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "StaticGhost"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "package.json",
+      "lib/**/*",
+      "src/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    }
   }
 }
