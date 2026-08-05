@@ -5,6 +5,7 @@ contextBridge.exposeInMainWorld('ghostAppAPI', {
   saveProfiles: (profiles) => ipcRenderer.invoke('save-profiles', profiles),
   testGhostConnection: (options) => ipcRenderer.invoke('test-ghost-connection', options),
   selectFile: (filters) => ipcRenderer.invoke('select-file', filters),
+  selectDirectory: () => ipcRenderer.invoke('select-directory'),
   dockerStatus: (containerName) => ipcRenderer.invoke('docker-status', containerName),
   dockerStart: (options) => ipcRenderer.invoke('docker-start', options),
   dockerStop: (containerName) => ipcRenderer.invoke('docker-stop', containerName),

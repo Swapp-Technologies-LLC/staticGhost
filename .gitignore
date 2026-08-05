@@ -10,3 +10,4 @@ themes/*.zip            # any zip you might place locally
 *.md
 !README.md       # keep README tracked (the exclamation negates the previous rule)
 *.zip
+*.ai

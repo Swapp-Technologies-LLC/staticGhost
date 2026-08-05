@@ -181,6 +181,15 @@
           </div>
 
           <div class="form-group">
+            <label>Custom Static Output Directory (Optional)</label>
+            <div class="form-row">
+              <input type="text" id="custom-output-dir-input" class="form-control" placeholder="Default AppData path will be used if left blank">
+              <button class="btn btn-outline" id="btn-select-output-dir">📂 Choose Folder</button>
+            </div>
+            <small class="help-text">Select the local folder containing your static repository where these files should be written directly.</small>
+          </div>
+
+          <div class="form-group">
             <label>Giscus GitHub Comments Repo (Optional)</label>
             <input type="text" id="giscus-repo-input" class="form-control" placeholder="username/blog-a">
             <small class="help-text">Enable free comments via GitHub Discussions. <a href="https://github.com/Swapp-Technologies-LLC/staticGhost#-giscus-comments-integration--setup" class="external-link" style="color: #818cf8; text-decoration: underline;">How to setup Giscus ↗</a></small>

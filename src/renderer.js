@@ -72,6 +72,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (ghostUrlInput) ghostUrlInput.value = `http://localhost:${p.port || 2368}`;
     const ghostKeyInput = document.getElementById('ghost-key-input');
     if (ghostKeyInput) ghostKeyInput.value = p.ghostApiKey || '';
+    const customOutputDirInput = document.getElementById('custom-output-dir-input');
+    if (customOutputDirInput) customOutputDirInput.value = p.outputDir || '';
     if (dockerContainerNameInput) dockerContainerNameInput.value = p.containerName || `ghost-${p.id}`;
     if (dockerPortInput) dockerPortInput.value = p.port || 2368;
     if (dockerVolumeInput) dockerVolumeInput.value = p.volumeName || `ghost_vol_${containerSlug}`;
@@ -99,6 +101,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     p.siteUrl = siteUrlInput.value;
     const ghostKeyInput = document.getElementById('ghost-key-input');
     if (ghostKeyInput) p.ghostApiKey = ghostKeyInput.value;
+    const customOutputDirInput = document.getElementById('custom-output-dir-input');
+    if (customOutputDirInput) p.outputDir = customOutputDirInput.value.trim();
     p.containerName = dockerContainerNameInput.value;
     p.port = parseInt(dockerPortInput.value) || 2368;
     p.volumeName = dockerVolumeInput.value;
@@ -377,6 +381,21 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Select Custom Output Directory
+  const btnSelectOutputDir = document.getElementById('btn-select-output-dir');
+  const customOutputDirInput = document.getElementById('custom-output-dir-input');
+  if (btnSelectOutputDir && customOutputDirInput) {
+    btnSelectOutputDir.addEventListener('click', async () => {
+      if (window.ghostAppAPI && window.ghostAppAPI.selectDirectory) {
+        const folderPath = await window.ghostAppAPI.selectDirectory();
+        if (folderPath) {
+          customOutputDirInput.value = folderPath;
+          saveCurrentProfileData();
+        }
+      }
+    });
+  }
+
   // Export Static Site
   const btnRunExport = document.getElementById('btn-run-export');
   const exportResultBox = document.getElementById('export-result-box');
@@ -416,6 +435,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         projectName: activeProfileId,
         ghostUrl: url,
         ghostApiKey: key,
+        outputDir: document.getElementById('custom-output-dir-input') ? document.getElementById('custom-output-dir-input').value.trim() : '',
         siteTitle: siteTitleInput.value,
         siteUrl: siteUrlInput.value,
         giscusRepo: giscusRepoInput.value,

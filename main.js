@@ -135,6 +135,14 @@ ipcMain.handle('test-ghost-connection', async (event, options) => {
   return await fetcher.testConnection();
 });
 
+ipcMain.handle('select-directory', async (event) => {
+  const result = await dialog.showOpenDialog(mainWindow, {
+    properties: ['openDirectory', 'createDirectory']
+  });
+  if (result.canceled || result.filePaths.length === 0) return null;
+  return result.filePaths[0];
+});
+
 ipcMain.handle('select-file', async (event, filters) => {
   const result = await dialog.showOpenDialog(mainWindow, {
     properties: ['openFile'],
@@ -189,8 +197,11 @@ ipcMain.handle('cloudflare-status', async () => {
 
 ipcMain.handle('export-static-site', async (event, config) => {
   try {
-    const projectSlug = (config.projectName || 'project').toLowerCase().replace(/[^a-z0-9]/g, '-');
-    const outputDir = path.join(app.getPath('userData'), `exported-ghost-${projectSlug}`);
+    let outputDir = config.outputDir ? config.outputDir.trim() : '';
+    if (!outputDir) {
+      const projectSlug = (config.projectName || 'project').toLowerCase().replace(/[^a-z0-9]/g, '-');
+      outputDir = path.join(app.getPath('userData'), `exported-ghost-${projectSlug}`);
+    }
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
