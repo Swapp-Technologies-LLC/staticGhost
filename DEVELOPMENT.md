@@ -53,8 +53,8 @@ When making styling adjustments, backend updates, or adding new features, follow
 ## 🔒 Data Persistence & Profiles
 
 Project profiles, database ports, volumes, custom layout scripts, and Content API Keys are saved locally on the user's computer inside the Electron app data directory:
-* **Path (Windows)**: `%APPDATA%/staticghost/profiles.json`
-* **Path (macOS)**: `~/Library/Application Support/staticghost/profiles.json`
+* **Path (Windows)**: `%APPDATA%/staticghost/project-profiles.json`
+* **Path (macOS)**: `~/Library/Application Support/staticghost/project-profiles.json`
 
 Do **NOT** commit local profiles, volume data, or API keys to the version control repository. They are managed dynamically by each user's installation.
 
@@ -99,7 +99,7 @@ When your updates are fully tested and ready for production use, follow the guid
 StaticGhost adheres to the standard `vMAJOR.MINOR.PATCH` versioning convention:
 * **`PATCH` (Bug Fixes & Tweaks)**: Bumed for backward-compatible bug fixes, UI styling alignments, or documentation corrections. Example: `v1.0.0` ➔ `v1.0.1`.
 * **`MINOR` (New Features)**: Bumped for new features introduced in a backward-compatible manner (e.g., adding a new templates override manager or custom export targets). Example: `v1.0.0` ➔ `v1.1.0`.
-* **`MAJOR` (Breaking Changes)**: Bumped for breaking changes or incompatible API/schema updates (e.g., modifying `profiles.json` structure in a way that breaks existing project files). Example: `v1.0.0` ➔ `v2.0.0`.
+* **`MAJOR` (Breaking Changes)**: Bumped for breaking changes or incompatible API/schema updates (e.g., modifying `project-profiles.json` structure in a way that breaks existing project files). Example: `v1.0.0` ➔ `v2.0.0`.
 * **Pre-releases**: Suffix version tag with a hyphen and phase for testing builds (e.g., `v1.1.0-alpha.1`, `v1.1.0-beta.3`).
 
 ### Release Procedure

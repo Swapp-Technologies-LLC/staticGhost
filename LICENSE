@@ -1,0 +1,123 @@
+StaticGhost — Dual License
+Copyright (C) 2026 Swapp Technologies LLC <https://www.swapp.solutions>
+
+=====================================================================
+  DRAFT — PREPARED FOR REVIEW BY LICENSED COUNSEL. NOT YET IN EFFECT.
+  Do not publish this file until an attorney has reviewed it.
+=====================================================================
+
+StaticGhost is made available under a DUAL LICENSE. You may use, copy,
+modify, and distribute StaticGhost under EITHER of the following, at
+your option:
+
+---------------------------------------------------------------------
+OPTION 1 — GNU AFFERO GENERAL PUBLIC LICENSE, VERSION 3 (AGPLv3)
+---------------------------------------------------------------------
+
+The complete text of the AGPLv3 is distributed with this software in
+the file LICENSE-AGPL-3.0.txt and is available at:
+
+    https://www.gnu.org/licenses/agpl-3.0.txt
+
+Under this option you receive all rights the AGPLv3 grants, including
+the right to use StaticGhost for personal, internal business, and
+commercial purposes, and to modify and redistribute it. You also take
+on all obligations the AGPLv3 imposes, including but not limited to:
+
+  (a) Section 5 — modified versions you convey must be released under
+      the AGPLv3 and carry prominent notices of modification;
+  (b) Section 6 — you must provide corresponding source code when you
+      convey object code, including the packaged desktop installer;
+  (c) Section 13 — if you modify StaticGhost and make it available to
+      users over a computer network, you must offer those users the
+      corresponding source of your modified version.
+
+No additional restrictions are imposed on you under this option.
+Consistent with AGPLv3 Section 7, any further restriction stated
+elsewhere in Swapp Technologies LLC materials does not apply to your
+exercise of rights granted under the AGPLv3.
+
+---------------------------------------------------------------------
+OPTION 2 — COMMERCIAL LICENSE
+---------------------------------------------------------------------
+
+If you do not wish to comply with the AGPLv3 — most commonly because
+you want to offer StaticGhost, or a derivative of it, as a hosted or
+managed service WITHOUT disclosing the corresponding source of your
+modifications to your users, or because you need white-label, OEM, or
+proprietary redistribution terms — you may instead obtain a separate
+commercial license from Swapp Technologies LLC.
+
+A commercial license is a separate written agreement and is not
+granted by this file. To obtain one, contact:
+
+    Website: https://www.swapp.solutions
+    Email:   devops@swapp.solutions
+
+Swapp Technologies LLC is the sole copyright holder of the StaticGhost
+original work and may license it on any terms it chooses. Contributions
+accepted into the project are subject to the project's Contributor
+License Agreement, which must be signed before a contribution is merged.
+
+---------------------------------------------------------------------
+TRADEMARKS
+---------------------------------------------------------------------
+
+"StaticGhost", "Swapp Technologies", and the associated logos are
+trademarks of Swapp Technologies LLC. Neither license option above
+grants any right to use these marks, except for nominative fair use to
+accurately identify the origin of the software. In particular, you may
+not use these marks to name, brand, or promote a modified version or a
+competing service.
+
+"Ghost" is a trademark of the Ghost Foundation. StaticGhost is an
+independent project and is not affiliated with, endorsed by, or
+sponsored by the Ghost Foundation.
+
+---------------------------------------------------------------------
+THIRD-PARTY COMPONENTS
+---------------------------------------------------------------------
+
+StaticGhost incorporates and/or depends on third-party open-source
+components, each governed by its own license. See THIRD-PARTY-NOTICES
+for the full list and license texts.
+
+---------------------------------------------------------------------
+WARRANTY DISCLAIMER AND LIMITATION OF LIABILITY
+---------------------------------------------------------------------
+
+The following applies to the maximum extent permitted by applicable
+law, and does not limit any liability that cannot lawfully be limited
+(including liability for fraud, gross negligence, willful misconduct,
+death or personal injury, or any non-waivable statutory consumer
+rights, which may vary by jurisdiction):
+
+STATICGHOST IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+IN NO EVENT SHALL SWAPP TECHNOLOGIES LLC BE LIABLE FOR ANY CLAIM,
+DAMAGES, OR OTHER LIABILITY ARISING FROM, OUT OF, OR IN CONNECTION
+WITH STATICGHOST OR ITS USE. THE AGGREGATE LIABILITY OF SWAPP
+TECHNOLOGIES LLC SHALL NOT EXCEED THE GREATER OF (A) THE TOTAL AMOUNT
+PAID BY YOU TO SWAPP TECHNOLOGIES LLC IN THE TWELVE MONTHS PRECEDING
+THE CLAIM, OR (B) ONE HUNDRED U.S. DOLLARS ($100).
+
+Note: StaticGhost includes a build-time content-encryption feature. No
+encryption implementation is guaranteed to be free of defects, and
+Swapp Technologies LLC makes no representation that content protected
+using this feature cannot be recovered by a determined attacker. Do not
+rely on this feature as the sole protection for sensitive information.
+
+---------------------------------------------------------------------
+GOVERNING LAW
+---------------------------------------------------------------------
+
+Any dispute arising out of the Option 2 commercial license, or out of
+Swapp Technologies LLC's own conduct in distributing StaticGhost, shall
+be governed by the laws of the State of Texas, USA, without regard to
+its conflict-of-law principles, with exclusive venue in the state and
+federal courts of Travis County, Texas. This clause does not purport to
+add any term to, or restrict any right granted by, the AGPLv3 under
+Option 1, and does not override mandatory consumer-protection venue or
+choice-of-law rules that may apply in your jurisdiction.

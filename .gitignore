@@ -1,17 +1,30 @@
-# Node modules – always ignore
+# =====================================================================
+# NOTE: .gitignore only supports WHOLE-LINE comments. A "#" placed at
+# the end of a pattern line becomes part of the pattern and silently
+# breaks it. Keep every comment on its own line.
+# =====================================================================
+
+# Node modules
 node_modules/
+
 # Build artefacts
 *.log
 *.tmp
-# Theme files (license‑restricted)
-themes/themeforest-*/   # the whole folder
-themes/*.zip            # any zip you might place locally
-# Unwanted markdown files
-*.md
-!README.md
-!DEVELOPMENT.md
+
+# ---------------------------------------------------------------------
+# Theme files (license-restricted — MUST NOT be committed)
+# Commercial Ghost themes (ThemeForest et al.) are licensed to the
+# purchaser only and may not be redistributed in a public repository.
+# The whole themes/ directory is excluded. If you need an example theme,
+# it must be one we authored or one with explicit redistribution rights.
+# ---------------------------------------------------------------------
+themes/
 *.zip
-*.ai
+
+# ---------------------------------------------------------------------
+# Private documentation and internal strategy (never published)
+# ---------------------------------------------------------------------
+private-docs/
 
 # Electron build distributions
 dist/
@@ -19,4 +32,44 @@ dist/
 # Test exports
 test-export-output/
 
+# Local credentials and profile stores (belt-and-braces; these normally
+# live in the OS userData dir, not the repo)
+project-profiles.json
+profiles.json
+.env
+.env.*
 
+# Design source files
+*.ai
+
+# ---------------------------------------------------------------------
+# Markdown allowlist: ignore all .md, then re-include only the docs we
+# have deliberately decided to publish. Adding a new public doc requires
+# adding an explicit "!" line here — that is the intended friction.
+# ---------------------------------------------------------------------
+*.md
+!README.md
+!DEVELOPMENT.md
+!TECHNICAL_SPEC.md
+!DESIGN_GUIDELINES.md
+!PRIVACY_POLICY.md
+!CONTRIBUTING.md
+!SECURITY.md
+!CHANGELOG.md
+!THIRD-PARTY-NOTICES.md
+!docs/**/*.md
+
+# ---------------------------------------------------------------------
+# DELIBERATELY NOT RE-INCLUDED (internal business/strategy documents).
+# These were previously force-included and would have been published:
+#   GROWTH_STRATEGY.md
+#   BUSINESS_MODEL_CANVAS.md
+#   PROJECT_RECAP_AND_LAUNCH_ROADMAP.md
+#   PROJECT_LESSONS_AND_UPDATES.md
+#   VALIDATION_TEST.md
+# They contain pricing psychology, revenue splits, launch plans and
+# internal infrastructure details. If any needs to be public, re-include
+# it explicitly above AFTER scrubbing internal hostnames and IPs.
+# NOTE: TECHNICAL_SPEC.md links to GROWTH_STRATEGY.md — fix or remove
+# those links before publishing, or they will 404.
+# ---------------------------------------------------------------------

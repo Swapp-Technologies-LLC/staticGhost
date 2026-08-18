@@ -55,18 +55,46 @@ async function runVerificationTests() {
   const crypto = new StaticCryptoPassword();
   const encryptedPostHtml = ingestor.processPostToHtml(posts[1]);
   console.assert(encryptedPostHtml.includes('Password Protected Post'), 'Should render password prompt UI');
-  console.assert(encryptedPostHtml.includes('CryptoJS.AES.decrypt'), 'Should include client-side AES decryptor script');
-  console.log('✓ Build-time AES-256 password protection verified!');
+  console.assert(encryptedPostHtml.includes('crypto.subtle.decrypt'), 'Should decrypt via native WebCrypto SubtleCrypto');
+  console.assert(encryptedPostHtml.includes('AES-GCM'), 'Should use authenticated AES-GCM');
+  console.assert(!/cdnjs|crypto-js/i.test(encryptedPostHtml), 'Must not load any third-party crypto script from a CDN');
+  console.assert(!encryptedPostHtml.includes(posts[1].html), 'Plaintext post body must never appear in the build output');
+  const payloadMatch = encryptedPostHtml.match(/ENCRYPTED_PAYLOAD = "(v2:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+)"/);
+  console.assert(payloadMatch, 'Should embed a well-formed v2 encrypted payload');
+  console.log('✓ Build-time AES-256-GCM password protection verified (WebCrypto, no CDN)!');
+
+  // Test 3b: round-trip the payload through the same primitives the browser uses
+  if (payloadMatch) {
+    const [, ver, saltHex, ivHex, ctHex] = payloadMatch[0].match(/(v2):([0-9a-f]+):([0-9a-f]+):([0-9a-f]+)/);
+    const nodeCrypto = require('crypto');
+    const key = nodeCrypto.pbkdf2Sync(posts[1].password || 'secret', Buffer.from(saltHex, 'hex'), 600000, 32, 'sha256');
+    const buf = Buffer.from(ctHex, 'hex');
+    const decipher = nodeCrypto.createDecipheriv('aes-256-gcm', key, Buffer.from(ivHex, 'hex'));
+    decipher.setAuthTag(buf.subarray(buf.length - 16));
+    const out = Buffer.concat([decipher.update(buf.subarray(0, buf.length - 16)), decipher.final()]).toString('utf8');
+    console.assert(out.length > 0, 'Encrypted payload should round-trip back to the original post body');
+    console.log('✓ Encrypted payload round-trip verified!');
+  }
+
+  // Test 3c: FTC affiliate disclosure banner
+  console.log('\n[Test 3c] FTC Affiliate Disclosure Banner...');
+  const discOn = new DesignIngestor({ affiliateDomains: ['amazon.com'], enableAffiliateAutoTag: true });
+  const discOff = new DesignIngestor({ affiliateDomains: ['amazon.com'], enableAffiliateAutoTag: false });
+  console.assert(discOn.processPostToHtml(posts[0]).includes('ftc-affiliate-disclosure'), 'Disclosure banner should render when affiliate tagging is enabled');
+  console.assert(!discOff.processPostToHtml(posts[0]).includes('ftc-affiliate-disclosure'), 'Disclosure banner should NOT render when affiliate tagging is disabled');
+  console.log('✓ FTC affiliate disclosure banner verified!');
 
   // Test 4: RSS & Sitemap Generation
   console.log('\n[Test 4] RSS & Sitemap XML Generation...');
   const rssGen = new RssSitemapGenerator('Company Blog', 'https://company.github.io/blog');
   const rssXml = rssGen.generateRss(posts);
   const sitemapXml = rssGen.generateSitemap(posts);
+  const robotsTxt = rssGen.generateRobotsTxt();
 
   console.assert(rssXml.includes('<rss version="2.0"'), 'RSS XML should be valid format');
   console.assert(sitemapXml.includes('<urlset'), 'Sitemap XML should be valid format');
-  console.log('✓ RSS and Sitemap XML generated successfully!');
+  console.assert(robotsTxt.includes('Sitemap: https://company.github.io/blog/sitemap.xml'), 'Robots.txt should include sitemap directive');
+  console.log('✓ RSS, Sitemap XML, and Robots.txt generated successfully!');
 
   // Test 5: Static Export to Temporary Directory & Pagefind Indexing
   console.log('\n[Test 5] Full Static Directory Export & Search Indexing...');

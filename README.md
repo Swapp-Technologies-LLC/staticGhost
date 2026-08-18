@@ -4,12 +4,11 @@
 
 # 👻 StaticGhost: Desktop Suite & Exporter
 
-**A collaborative open-source creation by Swapp Technologies LLC & Google Antigravity AI**
+**An open-source project by Swapp Technologies LLC**
 
 [![Created by Swapp Tech](https://img.shields.io/badge/Created%20By-Swapp%20Technologies%20LLC-6366f1?style=for-the-badge)](https://www.swapp.solutions)
-[![Built with Antigravity](https://img.shields.io/badge/AI%20Pair%20Programmer-Google%20Antigravity-4285F4?style=for-the-badge&logo=google)](https://deepmind.google)
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-Donate-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/swappTechOpenSource)
-[![License: MIT](https://img.shields.io/badge/License-MIT-10b981.svg?style=for-the-badge)](LICENSE)
+[![License: Dual](https://img.shields.io/badge/License-AGPLv3%20%2F%20Commercial-10b981.svg?style=for-the-badge)](LICENSE)
 
 <br/>
 
@@ -45,7 +44,7 @@
 - [🛡️ Security Disclaimer & Token Best Practices](#️-security-disclaimer--token-best-practices)
 - [🤝 Standing on the Shoulders of Giants](#-standing-on-the-shoulders-of-giants)
 - [💖 Giving Back to Open Source](#-giving-back-to-open-source)
-- [📜 License & Collaboration](#-license--collaboration)
+- [📜 License](#-license)
 
 ---
 
@@ -56,7 +55,7 @@
 - **⚡ Mode B: Static HTML Exporter**: Convert Ghost posts into zero-cost, static HTML pages ready for GitHub Pages.
 - **🎨 Custom Design & Logo Ingestion**: Import your main website's `layout.html` file so blog posts share your exact header, footer, navbar, logos, and CSS styling.
 - **💰 Affiliate Link Automation**: Auto-tags product links (`amazon.com`, `bestbuy.com`, etc.) with `rel="sponsored nofollow noopener"` and `target="_blank"` for Google SEO compliance and link monetization tracking.
-- **🔒 Build-Time AES-256 Password Protection**: Encrypts password-protected posts at export time. Unencrypted text is never exposed on GitHub Pages; visitors decrypt posts in-browser with a password prompt.
+- **🔒 Build-Time AES-256-GCM Password Protection**: Encrypts password-protected posts at export time using authenticated AES-256-GCM with PBKDF2-HMAC-SHA256 key derivation. Plaintext is never written to the build output; visitors decrypt in-browser via the native WebCrypto API, with no external script and no third-party requests.
 - **🔍 Pagefind Static Full-Text Search**: Builds an instant client-side search index (`/search/search-index.js`) without requiring a search server.
 - **💬 Giscus GitHub Comments**: Embeds free GitHub Discussions commenting into static posts.
 - **📡 RSS & Sitemap XML**: Automatically generates valid `rss.xml` and `sitemap.xml` files.
@@ -151,7 +150,7 @@ Follow these steps to generate and connect your API key:
    - Paste the copied key into the **Content API Key** input inside the *Local Ghost Connection Test* block.
    - Click **Test Connection** to confirm a successful link.
 
-Your Content API key is automatically saved in your active project profile database (`profiles.json`) so you only need to enter it once.
+Your Content API key is automatically saved in your active project profile database (`project-profiles.json`) so you only need to enter it once.
 
 ---
 
@@ -378,7 +377,7 @@ This project is made possible thanks to the incredible open-source projects, too
 - **[Pagefind](https://pagefind.app)**: For static client-side full-text search indexing with zero backend.
 - **[Giscus](https://giscus.app)**: For powering free, zero-database blog comments via GitHub Discussions.
 - **[GitHub Pages](https://pages.github.com)**, **[Netlify](https://netlify.com)**, **[Cloudflare Pages](https://pages.cloudflare.com)**, **[Render](https://render.com)** & **[Vercel](https://vercel.com)**: For providing generous, high-performance static hosting for developers worldwide.
-- **[CryptoJS](https://github.com/brix/crypto-js)**: For client-side AES-256 cryptographic decryption.
+- **The Web Cryptography API**: Password-protected posts are decrypted in-browser using the platform's native `crypto.subtle` — no third-party cryptography library is loaded.
 
 ---
 
@@ -386,11 +385,20 @@ This project is made possible thanks to the incredible open-source projects, too
 
 We strongly believe in supporting the open-source ecosystem that makes this tool possible.
 
-**20% of all sponsorship funds** received via GitHub Sponsors, Open Collective, and Buy Me a Coffee are automatically re-donated back to the **Ghost Foundation**, **Electron**, **Pagefind**, and our core open-source dependency maintainers!
+We actively contribute a portion of sponsorship funds received via GitHub Sponsors and Open Collective back to our core open-source dependency maintainers (the Ghost Foundation, Electron Project, Pagefind, and Cheerio).
 
 ---
 
-## 📜 License & Collaboration
+## 📜 License
 
-Created by **Swapp Technologies LLC** in collaboration with **Google Antigravity AI**.
-Licensed under the [MIT License](LICENSE). Feel free to use, modify, and share!
+Created by **Swapp Technologies LLC**. Portions of this project were developed with the assistance of AI pair-programming tools.
+
+StaticGhost is **dual-licensed** ([`LICENSE`](LICENSE)) — you may use it under EITHER of the following, at your option:
+
+* ✅ **GNU AGPLv3** — free to download, use, modify, and self-host, including for business use. If you run a modified version as a network service, AGPLv3 §13 requires you to offer that service's complete corresponding source to its users.
+* 💼 **Commercial License** — for organizations that want to offer StaticGhost as a hosted/managed service without the AGPLv3 source-disclosure obligation, or that need white-label or OEM redistribution terms.
+
+> **Note:** "StaticGhost" is a trademark of Swapp Technologies LLC. The dual-license grant above covers the source code; it does not grant rights to use the StaticGhost name or logo to brand a competing service.
+
+For commercial licensing, contact: `devops@swapp.solutions` / [swapp.solutions](https://www.swapp.solutions).
+
