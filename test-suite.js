@@ -157,6 +157,31 @@ async function runVerificationTests() {
   console.assert(compiledGalleryHtml.includes('Gallery:'), 'Compiled output should use Gallery layout');
   console.log('✓ Custom tag-based template routing verified successfully!');
 
+  // Test 7: Structured JSON Logger & Distributed Tracing
+  console.log('\n[Test 7] Structured JSON Logger & Distributed Tracing...');
+  const Logger = require('./lib/logger');
+  const logger = new Logger({ serviceName: 'staticghost-test' });
+  const reqId = logger.generateRequestId();
+  console.assert(reqId.startsWith('req_'), 'Request ID should be prefixed with req_');
+
+  const formattedLog = logger.formatLog('info', 'Export static site completed', {
+    requestId: reqId,
+    durationMs: 240,
+    endpoint: '/export',
+    customerId: 'cust_123'
+  });
+  const parsedLog = JSON.parse(formattedLog);
+  console.assert(parsedLog.level === 'INFO', 'Log level should be INFO');
+  console.assert(parsedLog.requestId === reqId, 'Log should contain request ID');
+  console.assert(parsedLog.durationMs === 240, 'Log should contain durationMs');
+  console.assert(parsedLog.endpoint === '/export', 'Log should contain endpoint');
+  console.assert(parsedLog.customerId === 'cust_123', 'Log should contain customerId');
+
+  const span = logger.startSpan('export_compilation', { requestId: reqId });
+  const spanDuration = span.end({ itemCount: 10 });
+  console.assert(typeof spanDuration === 'number', 'Span should return duration in ms');
+  console.log('✓ Structured JSON Logger & Distributed Tracing verified successfully!');
+
   console.log('\n==================================================');
   console.log('🎉 ALL VERIFICATION TESTS PASSED SUCCESSFULLY! 🎉');
   console.log('==================================================\n');

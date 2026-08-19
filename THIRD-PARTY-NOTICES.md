@@ -28,11 +28,14 @@ StaticGhost incorporates or bundles third-party software components. Each compon
 
 ---
 
-## 4. CryptoJS Cryptographic Components
-* **Project**: CryptoJS (`crypto-js`)
-* **License**: MIT License
-* **Copyright**: Copyright (c) Jeff Mott
-* **URL**: https://github.com/brix/crypto-js
+## 4. Cryptography
+
+StaticGhost bundles **no third-party cryptography library**.
+
+* **Build time**: Node.js built-in `crypto` module (AES-256-GCM, PBKDF2-HMAC-SHA256), covered by the Node.js license already noted under Electron above.
+* **Read time**: the browser's native Web Cryptography API (`crypto.subtle`). No script is fetched from any CDN, and no cryptography code is redistributed by this project.
+
+*(Earlier releases bundled CryptoJS via a CDN reference. That dependency was removed in favour of the platform-native WebCrypto API.)*
 
 ---
 
