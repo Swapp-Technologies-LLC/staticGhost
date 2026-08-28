@@ -182,6 +182,80 @@ async function runVerificationTests() {
   console.assert(typeof spanDuration === 'number', 'Span should return duration in ms');
   console.log('✓ Structured JSON Logger & Distributed Tracing verified successfully!');
 
+  // Test: Docker container identification & port scoping
+  console.log('\n[Test] Docker Container Identification & Port Scoping...');
+  const DockerGhost = require('./lib/docker-ghost');
+
+  // Docker's name filter is a substring regex. Unanchored, 'blog' also matches
+  // 'blog-filebrowser' and 'blog-archive', which merged their statuses into one
+  // line and could report a project running because a sibling was up.
+  const blogFilter = DockerGhost.buildNameFilter('swapp-tech-blog');
+  const blogRe = new RegExp(blogFilter.replace(/^name=/, ''));
+  console.assert(blogFilter === 'name=^swapp-tech-blog$', 'Name filter should be anchored at both ends');
+  console.assert(blogRe.test('swapp-tech-blog'), 'Anchored filter must still match its own container');
+  console.assert(!blogRe.test('swapp-tech-blog-filebrowser'), 'Anchored filter must NOT match the file browser sidecar');
+  console.assert(!blogRe.test('swapp-tech-blog-archive'), 'Anchored filter must NOT match a sibling project');
+
+  // Regex metacharacters in container names must not widen the match.
+  const dotRe = new RegExp(DockerGhost.buildNameFilter('my.blog').replace(/^name=/, ''));
+  console.assert(dotRe.test('my.blog'), 'Escaped filter must match the literal name');
+  console.assert(!dotRe.test('myXblog'), 'A dot in a container name must be escaped, not treated as any-char');
+
+  // Published ports must bind loopback only. A bare '-p 2368:2368' binds
+  // 0.0.0.0, exposing Ghost and an unauthenticated file browser to the LAN,
+  // and contradicts the port-scoping claim in README.
+  console.assert(DockerGhost.buildPortArg(2368, 2368) === '127.0.0.1:2368:2368', 'Ghost port must bind to 127.0.0.1');
+  console.assert(DockerGhost.buildPortArg(12368, 80) === '127.0.0.1:12368:80', 'File browser port must bind to 127.0.0.1');
+
+  // Sidecar naming/port derivation used by the separate status line.
+  console.assert(DockerGhost.fileBrowserNameFor('swapp-tech-blog') === 'swapp-tech-blog-filebrowser', 'File browser name derivation');
+  console.assert(DockerGhost.fileBrowserPortFor(2368) === 12368, 'File browser port offset');
+  console.log('✓ Docker container identification & loopback port scoping verified!');
+
+  // Test 8: File Browser Session Timers & Startup Sweep Matcher
+  console.log('\n[Test 8] File Browser Session Timers & Startup Sweep Matcher...');
+  const {
+    FB_SESSION_MS,
+    FB_EXTEND_MS,
+    FB_MAX_TOTAL_MS,
+    calculateRemainingMs,
+    canExtendFileBrowser,
+    extendFileBrowserDeadline,
+    matchFileBrowserProfileName
+  } = require('./lib/filebrowser-timer');
+
+  // 1. remainingMs() clamps to 0, never negative
+  const now = Date.now();
+  console.assert(calculateRemainingMs(now + 5000, now) === 5000, 'Future deadline should return positive remaining ms');
+  console.assert(calculateRemainingMs(now - 5000, now) === 0, 'Past deadline must clamp to 0 and never return negative values');
+  console.assert(calculateRemainingMs(null, now) === 0, 'Null deadline must clamp to 0');
+
+  // 2. canExtend() refuses once startedAt + FB_MAX_TOTAL_MS would be exceeded
+  const startedAt = now;
+  const initDeadline = startedAt + FB_SESSION_MS;
+  const maxCapDeadline = startedAt + FB_MAX_TOTAL_MS;
+  console.assert(canExtendFileBrowser(startedAt, initDeadline).canExtend === true, 'Initial 15m session should allow extension');
+  console.assert(canExtendFileBrowser(startedAt, maxCapDeadline).canExtend === false, 'Session at 2-hour cap must refuse extension');
+
+  // 3. extend from a near-expired deadline produces a future deadline up to cap
+  const nearExpired = startedAt + FB_SESSION_MS - 1000;
+  const extResult = extendFileBrowserDeadline(startedAt, nearExpired, now);
+  console.assert(extResult.success === true, 'Extension near deadline expiry should succeed');
+  console.assert(extResult.deadline === nearExpired + FB_EXTEND_MS, 'Extended deadline should advance by FB_EXTEND_MS');
+  console.assert(extResult.deadline <= startedAt + FB_MAX_TOTAL_MS, 'Extended deadline must not exceed 2-hour cap');
+
+  const capAttempt = extendFileBrowserDeadline(startedAt, maxCapDeadline, now);
+  console.assert(capAttempt.success === false, 'Extension past 2-hour cap must fail');
+  console.assert(capAttempt.reason.includes('Maximum 2-hour'), 'Should give clear cap refusal reason');
+
+  // 4. startup-sweep name matcher matches `blog-filebrowser` but NOT `blog`, and NOT unmanaged containers
+  const profiles = ['swapp-tech-blog', 'project-b'];
+  console.assert(matchFileBrowserProfileName('swapp-tech-blog-filebrowser', profiles) === true, 'Matches managed filebrowser container');
+  console.assert(matchFileBrowserProfileName('swapp-tech-blog', profiles) === false, 'Must NOT match base blog container');
+  console.assert(matchFileBrowserProfileName('other-blog-filebrowser', profiles) === false, 'Must NOT match unmanaged filebrowser container absent from profiles');
+  console.assert(matchFileBrowserProfileName('filebrowser', profiles) === false, 'Must NOT match plain container name');
+  console.log('✓ File Browser Session Timers & Startup Sweep Matcher verified!');
+
   console.log('\n==================================================');
   console.log('🎉 ALL VERIFICATION TESTS PASSED SUCCESSFULLY! 🎉');
   console.log('==================================================\n');

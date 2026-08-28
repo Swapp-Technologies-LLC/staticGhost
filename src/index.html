@@ -157,9 +157,12 @@
             <div id="docker-info-box" class="status-box">Checking Docker status...</div>
           </div>
 
-          <div class="button-group">
+          <div class="button-group" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
             <button class="btn btn-primary" id="btn-start-docker">Start This Project Container</button>
             <button class="btn btn-secondary" id="btn-browse-files">📂 Browse Volume Files</button>
+            <button class="btn btn-secondary" id="btn-extend-fb" style="display:none;">⏳ Extend +15m</button>
+            <button class="btn btn-secondary" id="btn-stop-fb" style="display:none;">🛑 Close File Browser</button>
+            <span id="fb-timer-badge" style="display:none; font-family: monospace; font-weight: bold; background: rgba(99, 102, 241, 0.2); padding: 0.4rem 0.8rem; border-radius: 6px; color: #818cf8;"></span>
             <button class="btn btn-danger" id="btn-stop-docker">Stop Container</button>
           </div>
         </div>

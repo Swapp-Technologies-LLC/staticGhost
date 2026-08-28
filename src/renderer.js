@@ -254,14 +254,133 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Docker Container Status Check
   const dockerInfoBox = document.getElementById('docker-info-box');
+
+  // Render one line per container. textContent per line, never innerHTML:
+  // container names are user input and this is a renderer process.
+  function setDockerStatusLines(lines) {
+    if (!dockerInfoBox) return;
+    dockerInfoBox.textContent = '';
+    lines.filter(Boolean).forEach((line) => {
+      const row = document.createElement('div');
+      row.textContent = line;
+      dockerInfoBox.appendChild(row);
+    });
+  }
+
+  // File Browser Timer UI State & Controls
+  const btnBrowseFiles = document.getElementById('btn-browse-files');
+  const btnExtendFb = document.getElementById('btn-extend-fb');
+  const btnStopFb = document.getElementById('btn-stop-fb');
+  const fbTimerBadge = document.getElementById('fb-timer-badge');
+
+  let activeFbDeadline = null;
+  let fbCountdownInterval = null;
+
+  function formatMMSS(ms) {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+  }
+
+  function updateFbTimerUI(running, remainingMs, canExtend, deadline) {
+    if (!running || remainingMs <= 0) {
+      if (fbCountdownInterval) {
+        clearInterval(fbCountdownInterval);
+        fbCountdownInterval = null;
+      }
+      activeFbDeadline = null;
+
+      if (btnBrowseFiles) {
+        btnBrowseFiles.textContent = '📂 Browse Volume Files';
+        btnBrowseFiles.style.display = 'inline-block';
+      }
+      if (btnExtendFb) btnExtendFb.style.display = 'none';
+      if (btnStopFb) btnStopFb.style.display = 'none';
+      if (fbTimerBadge) {
+        fbTimerBadge.style.display = 'none';
+        fbTimerBadge.textContent = '';
+      }
+      return;
+    }
+
+    activeFbDeadline = deadline || (Date.now() + remainingMs);
+
+    if (btnBrowseFiles) btnBrowseFiles.style.display = 'inline-block';
+    if (btnExtendFb) {
+      btnExtendFb.style.display = 'inline-block';
+      btnExtendFb.disabled = (canExtend === false);
+      btnExtendFb.title = (canExtend === false) ? 'Maximum 2-hour session limit reached' : 'Extend session by 15 minutes';
+    }
+    if (btnStopFb) btnStopFb.style.display = 'inline-block';
+    if (fbTimerBadge) {
+      fbTimerBadge.style.display = 'inline-block';
+      fbTimerBadge.textContent = `⏱ Session: ${formatMMSS(remainingMs)}`;
+    }
+
+    if (!fbCountdownInterval) {
+      fbCountdownInterval = setInterval(() => {
+        if (!activeFbDeadline) {
+          updateFbTimerUI(false, 0, false, null);
+          return;
+        }
+        const rem = Math.max(0, activeFbDeadline - Date.now());
+        if (rem <= 0) {
+          updateFbTimerUI(false, 0, false, null);
+          checkDocker();
+        } else if (fbTimerBadge) {
+          fbTimerBadge.textContent = `⏱ Session: ${formatMMSS(rem)}`;
+        }
+      }, 1000);
+    }
+  }
+
+  async function checkFileBrowserStatus() {
+    if (!window.ghostAppAPI || !dockerContainerNameInput) return;
+    const port = parseInt(dockerPortInput.value) || 2368;
+    const fbStatus = await window.ghostAppAPI.filebrowserStatus(dockerContainerNameInput.value, port);
+    updateFbTimerUI(fbStatus.running, fbStatus.remainingMs, fbStatus.canExtend, fbStatus.deadline);
+  }
+
+  window.addEventListener('focus', () => {
+    checkFileBrowserStatus();
+  });
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkFileBrowserStatus();
+    }
+  });
+
+  if (window.ghostAppAPI && window.ghostAppAPI.onFilebrowserExpired) {
+    window.ghostAppAPI.onFilebrowserExpired(() => {
+      updateFbTimerUI(false, 0, false, null);
+      if (dockerInfoBox) {
+        setDockerStatusLines(['File browser session expired for security. Click Browse Volume Files to start a new session.']);
+      }
+      checkDocker();
+    });
+  }
+
   async function checkDocker() {
     if (window.ghostAppAPI && dockerInfoBox && dockerContainerNameInput) {
-      const res = await window.ghostAppAPI.dockerStatus(dockerContainerNameInput.value);
+      const port = parseInt(dockerPortInput.value) || 2368;
+      const res = await window.ghostAppAPI.dockerStatus(dockerContainerNameInput.value, port);
       if (!res.installed) {
-        dockerInfoBox.textContent = 'Docker CLI not detected. Please install Docker Desktop for Mode A.';
+        setDockerStatusLines(['Docker CLI not detected. Please install Docker Desktop for Mode A.']);
       } else {
-        dockerInfoBox.textContent = `Container '${dockerContainerNameInput.value}': ${res.status} (Port ${dockerPortInput.value})`;
+        const lines = [
+          `Ghost container '${dockerContainerNameInput.value}': ${res.status} (Port ${dockerPortInput.value})`
+        ];
+        // Only shown once the file browser has actually been created.
+        const fb = res.fileBrowser;
+        if (fb && fb.exists) {
+          const fbPort = fb.port ? ` (Port ${fb.port})` : '';
+          lines.push(`File browser '${fb.containerName}': ${fb.status}${fbPort}`);
+        }
+        setDockerStatusLines(lines);
       }
+      await checkFileBrowserStatus();
     }
   }
 
@@ -330,7 +449,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-
   const btnSaveProjectLayout = document.getElementById('btn-save-project-layout');
   if (btnSaveProjectLayout) {
     btnSaveProjectLayout.addEventListener('click', () => {
@@ -339,17 +457,57 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  const btnBrowseFiles = document.getElementById('btn-browse-files');
   if (btnBrowseFiles) {
     btnBrowseFiles.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
-        dockerInfoBox.textContent = 'Launching Web File Browser...';
+        dockerInfoBox.textContent = 'Launching Web File Browser (15m session)...';
         const res = await window.ghostAppAPI.dockerStartFileBrowser({
           containerName: dockerContainerNameInput.value,
           port: parseInt(dockerPortInput.value) || 2368,
           volumeName: dockerVolumeInput.value
         });
         dockerInfoBox.textContent = res.message || res.error;
+        if (res.success) {
+          updateFbTimerUI(true, res.remainingMs || 15 * 60 * 1000, true, res.deadline);
+          checkDocker();
+        }
+      }
+    });
+  }
+
+  if (btnExtendFb) {
+    btnExtendFb.addEventListener('click', async () => {
+      if (window.ghostAppAPI) {
+        const res = await window.ghostAppAPI.filebrowserExtend(dockerContainerNameInput.value);
+        if (!res.success) {
+          if (dockerInfoBox) {
+            dockerInfoBox.textContent = res.reason || 'Maximum 2-hour session limit reached.';
+          }
+          if (res.reason && res.reason.includes('Maximum 2-hour')) {
+            if (btnExtendFb) {
+              btnExtendFb.disabled = true;
+              btnExtendFb.title = 'Maximum 2-hour session limit reached';
+            }
+          }
+        } else {
+          if (dockerInfoBox) {
+            dockerInfoBox.textContent = 'File browser session extended by +15m.';
+          }
+          updateFbTimerUI(true, res.remainingMs, true, res.deadline);
+        }
+      }
+    });
+  }
+
+  if (btnStopFb) {
+    btnStopFb.addEventListener('click', async () => {
+      if (window.ghostAppAPI) {
+        const res = await window.ghostAppAPI.filebrowserStop(dockerContainerNameInput.value);
+        if (dockerInfoBox) {
+          dockerInfoBox.textContent = res.message || 'File browser stopped.';
+        }
+        updateFbTimerUI(false, 0, false, null);
+        checkDocker();
       }
     });
   }

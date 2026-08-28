@@ -44,3 +44,12 @@ StaticGhost bundles **no third-party cryptography library**.
 * **License**: MIT License
 * **Copyright**: Copyright (c) Ghost Foundation
 * **URL**: https://ghost.org/
+
+---
+
+## 6. File Browser Sidecar Container
+* **Project**: File Browser (`filebrowser/filebrowser`)
+* **License**: Apache License 2.0
+* **Copyright**: Copyright (c) File Browser Authors
+* **URL**: https://github.com/filebrowser/filebrowser
+

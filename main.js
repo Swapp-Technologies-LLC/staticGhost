@@ -9,8 +9,79 @@ const PagefindIndexer = require('./lib/pagefind-indexer');
 const DockerGhost = require('./lib/docker-ghost');
 const CloudflareTunnel = require('./lib/cloudflare-tunnel');
 const CloudDeployer = require('./lib/cloud-deployer');
+const {
+  FB_SESSION_MS,
+  FB_EXTEND_MS,
+  FB_MAX_TOTAL_MS,
+  calculateRemainingMs,
+  canExtendFileBrowser,
+  extendFileBrowserDeadline,
+  matchFileBrowserProfileName
+} = require('./lib/filebrowser-timer');
 
 let mainWindow;
+const activeFileBrowserSessions = new Map();
+
+function stopFileBrowserContainerByName(fbContainerName) {
+  return new Promise((resolve) => {
+    const { execFile } = require('child_process');
+    execFile('docker', ['stop', fbContainerName], (err) => {
+      resolve({ success: !err });
+    });
+  });
+}
+
+function scheduleFileBrowserAutoStop(fbContainerName, delayMs) {
+  const session = activeFileBrowserSessions.get(fbContainerName);
+  if (!session) return;
+  if (session.timerId) clearTimeout(session.timerId);
+
+  session.timerId = setTimeout(async () => {
+    const active = activeFileBrowserSessions.get(fbContainerName);
+    if (!active) return;
+    activeFileBrowserSessions.delete(fbContainerName);
+    await stopFileBrowserContainerByName(fbContainerName);
+    if (mainWindow && !mainWindow.isDestroyed()) {
+      mainWindow.webContents.send('filebrowser-expired', {
+        containerName: active.containerName,
+        fbContainerName
+      });
+    }
+  }, Math.max(0, delayMs));
+}
+
+async function sweepOrphanFileBrowsers() {
+  try {
+    const currentPath = profilesPath();
+    let profilesData = [];
+    if (fs.existsSync(currentPath)) {
+      profilesData = JSON.parse(fs.readFileSync(currentPath, 'utf8'));
+    }
+    const knownProfileNames = profilesData.map(p => p.containerName).filter(Boolean);
+    if (!knownProfileNames.includes('ghost-local-blog')) {
+      knownProfileNames.push('ghost-local-blog');
+    }
+
+    const { execFile } = require('child_process');
+    execFile('docker', ['ps', '--format', '{{.Names}}'], (err, stdout) => {
+      if (err || !stdout) return;
+      const containerNames = stdout.trim().split('\n').map(s => s.trim()).filter(Boolean);
+      containerNames.forEach(name => {
+        if (matchFileBrowserProfileName(name, knownProfileNames)) {
+          stopFileBrowserContainerByName(name);
+        }
+      });
+    });
+  } catch (e) {}
+}
+
+function stopAllFileBrowserSessions() {
+  for (const [fbName, session] of activeFileBrowserSessions.entries()) {
+    if (session.timerId) clearTimeout(session.timerId);
+    stopFileBrowserContainerByName(fbName);
+  }
+  activeFileBrowserSessions.clear();
+}
 
 function createWindow() {
   mainWindow = new BrowserWindow({
@@ -32,13 +103,19 @@ function createWindow() {
 
 app.whenReady().then(() => {
   createWindow();
+  sweepOrphanFileBrowsers();
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 });
 
+app.on('before-quit', function () {
+  stopAllFileBrowserSessions();
+});
+
 app.on('window-all-closed', function () {
+  stopAllFileBrowserSessions();
   if (process.platform !== 'darwin') app.quit();
 });
 
@@ -155,11 +232,15 @@ ipcMain.handle('select-file', async (event, filters) => {
   return { path: filePath, content };
 });
 
-ipcMain.handle('docker-status', async (event, containerName) => {
+ipcMain.handle('docker-status', async (event, containerName, port) => {
   const available = await DockerGhost.checkDockerAvailable();
   if (!available.installed) return available;
-  const status = await DockerGhost.getGhostContainerStatus(containerName || 'ghost-local-blog');
-  return { installed: true, ...status };
+  const name = containerName || 'ghost-local-blog';
+  // Queried separately so a sibling container can never be spliced into the
+  // Ghost container's status line (see lib/docker-ghost.js).
+  const status = await DockerGhost.getGhostContainerStatus(name);
+  const fileBrowser = await DockerGhost.getFileBrowserStatus(name, port);
+  return { installed: true, ...status, fileBrowser };
 });
 
 ipcMain.handle('docker-start', async (event, options) => {
@@ -173,10 +254,142 @@ ipcMain.handle('docker-stop', async (event, containerName) => {
 ipcMain.handle('docker-start-filebrowser', async (event, options) => {
   const result = await DockerGhost.startFileBrowser(options);
   if (result.success && result.port) {
+    const containerName = options.containerName || 'ghost-local-blog';
+    const fbContainerName = DockerGhost.fileBrowserNameFor(containerName);
+    const now = Date.now();
+
+    const existing = activeFileBrowserSessions.get(fbContainerName);
+    if (existing && existing.timerId) clearTimeout(existing.timerId);
+
+    const startedAt = now;
+    const deadline = now + FB_SESSION_MS;
+
+    const session = {
+      containerName,
+      fbContainerName,
+      port: options.port,
+      fbPort: result.port,
+      startedAt,
+      deadline,
+      timerId: null
+    };
+
+    activeFileBrowserSessions.set(fbContainerName, session);
+    scheduleFileBrowserAutoStop(fbContainerName, FB_SESSION_MS);
+
     const { shell } = require('electron');
     shell.openExternal(`http://localhost:${result.port}`);
+
+    return {
+      ...result,
+      deadline,
+      startedAt,
+      remainingMs: FB_SESSION_MS
+    };
   }
   return result;
+});
+
+ipcMain.handle('filebrowser-status', async (event, containerName, port) => {
+  const name = containerName || 'ghost-local-blog';
+  const fbName = DockerGhost.fileBrowserNameFor(name);
+  const status = await DockerGhost.getFileBrowserStatus(name, port);
+  const session = activeFileBrowserSessions.get(fbName);
+
+  if (!status.running) {
+    if (session) {
+      if (session.timerId) clearTimeout(session.timerId);
+      activeFileBrowserSessions.delete(fbName);
+    }
+    return {
+      running: false,
+      containerName: fbName,
+      port: status.port,
+      deadline: null,
+      startedAt: null,
+      remainingMs: 0,
+      canExtend: false
+    };
+  }
+
+  if (session) {
+    const remaining = calculateRemainingMs(session.deadline);
+    if (remaining <= 0) {
+      if (session.timerId) clearTimeout(session.timerId);
+      activeFileBrowserSessions.delete(fbName);
+      await stopFileBrowserContainerByName(fbName);
+      return {
+        running: false,
+        containerName: fbName,
+        port: status.port,
+        deadline: null,
+        startedAt: null,
+        remainingMs: 0,
+        canExtend: false
+      };
+    }
+    const extendCheck = canExtendFileBrowser(session.startedAt, session.deadline);
+    return {
+      running: true,
+      containerName: fbName,
+      port: status.port,
+      deadline: session.deadline,
+      startedAt: session.startedAt,
+      remainingMs: remaining,
+      canExtend: extendCheck.canExtend
+    };
+  }
+
+  return {
+    running: true,
+    containerName: fbName,
+    port: status.port,
+    deadline: null,
+    startedAt: null,
+    remainingMs: 0,
+    canExtend: false
+  };
+});
+
+ipcMain.handle('filebrowser-extend', async (event, containerName) => {
+  const name = containerName || 'ghost-local-blog';
+  const fbName = DockerGhost.fileBrowserNameFor(name);
+  const session = activeFileBrowserSessions.get(fbName);
+
+  if (!session) {
+    return { success: false, reason: 'No active file browser session found' };
+  }
+
+  const result = extendFileBrowserDeadline(session.startedAt, session.deadline);
+  if (!result.success) {
+    return {
+      success: false,
+      reason: result.reason,
+      deadline: session.deadline,
+      remainingMs: result.remainingMs
+    };
+  }
+
+  session.deadline = result.deadline;
+  scheduleFileBrowserAutoStop(fbName, result.remainingMs);
+
+  return {
+    success: true,
+    deadline: result.deadline,
+    remainingMs: result.remainingMs
+  };
+});
+
+ipcMain.handle('filebrowser-stop', async (event, containerName) => {
+  const name = containerName || 'ghost-local-blog';
+  const fbName = DockerGhost.fileBrowserNameFor(name);
+  const session = activeFileBrowserSessions.get(fbName);
+  if (session) {
+    if (session.timerId) clearTimeout(session.timerId);
+    activeFileBrowserSessions.delete(fbName);
+  }
+  await stopFileBrowserContainerByName(fbName);
+  return { success: true, message: `File browser '${fbName}' stopped` };
 });
 
 ipcMain.handle('open-external', async (event, url) => {
