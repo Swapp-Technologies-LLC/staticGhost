@@ -37,6 +37,7 @@
       "icon": "src/favicon.ico"
     },
     "nsis": {
+      "artifactName": "StaticGhost Setup ${version}.${ext}",
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": "always",
