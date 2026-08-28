@@ -1,6 +1,6 @@
 {
   "name": "staticghost",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "StaticGhost: Desktop interface to run Ghost locally via Docker and export to clean, SEO-optimized static HTML pages.",
   "main": "main.js",
   "scripts": {

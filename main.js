@@ -243,6 +243,8 @@ ipcMain.handle('docker-status', async (event, containerName, port) => {
   return { installed: true, ...status, fileBrowser };
 });
 
+ipcMain.handle('get-app-version', () => app.getVersion());
+
 ipcMain.handle('docker-start', async (event, options) => {
   return await DockerGhost.startGhostContainer(options);
 });

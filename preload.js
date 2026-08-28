@@ -1,6 +1,7 @@
 const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('ghostAppAPI', {
+  getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   loadProfiles: () => ipcRenderer.invoke('load-profiles'),
   saveProfiles: (profiles) => ipcRenderer.invoke('save-profiles', profiles),
   testGhostConnection: (options) => ipcRenderer.invoke('test-ghost-connection', options),

@@ -215,6 +215,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   await loadAllProfiles();
 
+  if (window.ghostAppAPI && window.ghostAppAPI.getAppVersion) {
+    try {
+      const ver = await window.ghostAppAPI.getAppVersion();
+      const verBadge = document.getElementById('app-version-badge');
+      if (verBadge && ver) verBadge.textContent = `StaticGhost v${ver}`;
+    } catch (e) {}
+  }
+
   // Navigation Tabs
   const navItems = document.querySelectorAll('.nav-item');
   const tabPanes = document.querySelectorAll('.tab-pane');
