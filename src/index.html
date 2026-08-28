@@ -162,13 +162,16 @@
             <div id="docker-feedback-box" class="status-msg" style="display:none; margin-top:0.75rem; padding:0.75rem 1rem; border-radius:6px; border:1px solid #334155; background:rgba(99, 102, 241, 0.1); color:#f8fafc;"></div>
           </div>
 
-          <div class="button-group" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
-            <button class="btn btn-primary" id="btn-start-docker">Start This Project Container</button>
+          <div class="button-group" style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem;">
+            <button class="btn btn-primary" id="btn-start-docker">Start Ghost Container</button>
+            <button class="btn btn-danger" id="btn-stop-docker">Stop Ghost Container</button>
+          </div>
+
+          <div class="filebrowser-controls" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; padding-top: 0.75rem; border-top: 1px solid var(--border-color, #334155);">
             <button class="btn btn-secondary" id="btn-browse-files">📂 Browse Volume Files</button>
             <button class="btn btn-secondary" id="btn-extend-fb" style="display:none;">⏳ Extend +15m</button>
             <button class="btn btn-secondary" id="btn-stop-fb" style="display:none;">🛑 Close File Browser</button>
-            <span id="fb-timer-badge" style="display:none; font-family: monospace; font-weight: bold; background: rgba(99, 102, 241, 0.2); padding: 0.4rem 0.8rem; border-radius: 6px; color: #818cf8;"></span>
-            <button class="btn btn-danger" id="btn-stop-docker">Stop Container</button>
+            <span id="fb-timer-badge" style="display:none; font-family: monospace; font-size: 0.9rem; font-weight: 600; color: #818cf8; margin-left: 0.5rem;"></span>
           </div>
         </div>
       </section>

@@ -328,7 +328,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     activeFbDeadline = deadline || (Date.now() + remainingMs);
 
-    if (btnBrowseFiles) btnBrowseFiles.style.display = 'inline-block';
+    if (btnBrowseFiles) {
+      btnBrowseFiles.textContent = '📂 Open Web File Browser';
+      btnBrowseFiles.style.display = 'inline-block';
+    }
     if (btnExtendFb) {
       btnExtendFb.style.display = 'inline-block';
       btnExtendFb.disabled = (canExtend === false);
@@ -337,7 +340,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (btnStopFb) btnStopFb.style.display = 'inline-block';
     if (fbTimerBadge) {
       fbTimerBadge.style.display = 'inline-block';
-      fbTimerBadge.textContent = `⏱ Session: ${formatMMSS(remainingMs)}`;
+      fbTimerBadge.textContent = `⏱ ${formatMMSS(remainingMs)} remaining`;
     }
 
     if (!fbCountdownInterval) {
@@ -351,7 +354,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           updateFbTimerUI(false, 0, false, null);
           checkDocker();
         } else if (fbTimerBadge) {
-          fbTimerBadge.textContent = `⏱ Session: ${formatMMSS(rem)}`;
+          fbTimerBadge.textContent = `⏱ ${formatMMSS(rem)} remaining`;
         }
       }, 1000);
     }
@@ -483,6 +486,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnBrowseFiles) {
     btnBrowseFiles.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
+        if (activeFbDeadline && activeFbDeadline > Date.now()) {
+          const port = (parseInt(dockerPortInput.value) || 2368) + 10000;
+          setDockerFeedback('Reopened active Web File Browser tab.');
+          window.ghostAppAPI.openExternal(`http://localhost:${port}`);
+          return;
+        }
         setDockerFeedback('Launching Web File Browser (15m session)...');
         const res = await window.ghostAppAPI.dockerStartFileBrowser({
           containerName: dockerContainerNameInput.value,
