@@ -223,7 +223,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   const titles = {
     'tab-overview': { title: 'StaticGhost', sub: 'Manage Ghost locally or convert to static GitHub Pages with custom layout ingestion.' },
-    'tab-mode-a': { title: 'Mode A: Docker + Cloudflare Tunnel', sub: 'Run Ghost in a local Docker container exposed securely via Cloudflare.' },
+    'tab-mode-a': { title: 'Mode A: Local Ghost (Docker)', sub: 'Run Ghost in a dedicated, loopback-scoped Docker container with persistent volumes.' },
+    'tab-tunnel': { title: 'Cloudflare Tunnel (Pro)', sub: 'Manual terminal command setup for Community Edition; 1-click managed background tunnels in StaticGhost Pro.' },
     'tab-mode-b': { title: 'Mode B: Static Site Exporter', sub: 'Convert Ghost posts into zero-cost, static HTML pages for GitHub Pages.' },
     'tab-ingestion': { title: 'Design & Logo Ingestion Manager', sub: 'Match your main website styling by wrapping Ghost content inside custom layout templates.' },
     'tab-affiliates': { title: 'Affiliate Links & Automation', sub: 'Tag external product links automatically with rel="sponsored nofollow" for SEO compliance.' },
@@ -254,6 +255,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Docker Container Status Check
   const dockerInfoBox = document.getElementById('docker-info-box');
+  const dockerFeedbackBox = document.getElementById('docker-feedback-box');
+
+  function setDockerFeedback(message, isError = false) {
+    if (!dockerFeedbackBox) return;
+    if (!message) {
+      dockerFeedbackBox.style.display = 'none';
+      dockerFeedbackBox.textContent = '';
+      return;
+    }
+    dockerFeedbackBox.style.display = 'block';
+    dockerFeedbackBox.textContent = message;
+    dockerFeedbackBox.style.borderColor = isError ? '#ef4444' : '#334155';
+  }
 
   // Render one line per container. textContent per line, never innerHTML:
   // container names are user input and this is a renderer process.
@@ -388,13 +402,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnStartDocker) {
     btnStartDocker.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
-        dockerInfoBox.textContent = 'Starting dedicated Docker container & volume...';
+        setDockerFeedback('Starting dedicated Docker container & volume...');
         const res = await window.ghostAppAPI.dockerStart({
           containerName: dockerContainerNameInput.value,
           port: parseInt(dockerPortInput.value) || 2368,
           volumeName: dockerVolumeInput.value
         });
-        dockerInfoBox.textContent = res.message || res.error;
+        setDockerFeedback(res.message || res.error, !res.success);
 
         if (res.success) {
           const rawName = dockerContainerNameInput.value.trim();
@@ -419,6 +433,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           saveCurrentProfileData();
           renderProjectSelect(true);
         }
+        checkDocker();
       }
     });
   }
@@ -460,13 +475,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnBrowseFiles) {
     btnBrowseFiles.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
-        dockerInfoBox.textContent = 'Launching Web File Browser (15m session)...';
+        setDockerFeedback('Launching Web File Browser (15m session)...');
         const res = await window.ghostAppAPI.dockerStartFileBrowser({
           containerName: dockerContainerNameInput.value,
           port: parseInt(dockerPortInput.value) || 2368,
           volumeName: dockerVolumeInput.value
         });
-        dockerInfoBox.textContent = res.message || res.error;
+        setDockerFeedback(res.message || res.error, !res.success);
         if (res.success) {
           updateFbTimerUI(true, res.remainingMs || 15 * 60 * 1000, true, res.deadline);
           checkDocker();
@@ -480,9 +495,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (window.ghostAppAPI) {
         const res = await window.ghostAppAPI.filebrowserExtend(dockerContainerNameInput.value);
         if (!res.success) {
-          if (dockerInfoBox) {
-            dockerInfoBox.textContent = res.reason || 'Maximum 2-hour session limit reached.';
-          }
+          setDockerFeedback(res.reason || 'Maximum 2-hour session limit reached.', true);
           if (res.reason && res.reason.includes('Maximum 2-hour')) {
             if (btnExtendFb) {
               btnExtendFb.disabled = true;
@@ -490,9 +503,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
           }
         } else {
-          if (dockerInfoBox) {
-            dockerInfoBox.textContent = 'File browser session extended by +15m.';
-          }
+          setDockerFeedback('File browser session extended by +15m.');
           updateFbTimerUI(true, res.remainingMs, true, res.deadline);
         }
       }
@@ -503,9 +514,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     btnStopFb.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
         const res = await window.ghostAppAPI.filebrowserStop(dockerContainerNameInput.value);
-        if (dockerInfoBox) {
-          dockerInfoBox.textContent = res.message || 'File browser stopped.';
-        }
+        setDockerFeedback(res.message || 'File browser stopped.');
         updateFbTimerUI(false, 0, false, null);
         checkDocker();
       }
@@ -516,8 +525,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (btnStopDocker) {
     btnStopDocker.addEventListener('click', async () => {
       if (window.ghostAppAPI) {
+        setDockerFeedback('Stopping container...');
         const res = await window.ghostAppAPI.dockerStop(dockerContainerNameInput.value);
-        dockerInfoBox.textContent = res.message || res.error;
+        setDockerFeedback(res.message || res.error, !res.success);
+        checkDocker();
       }
     });
   }

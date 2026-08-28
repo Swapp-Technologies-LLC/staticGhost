@@ -32,7 +32,10 @@
           <span class="nav-icon">📊</span> Overview & Mode
         </button>
         <button class="nav-item" data-tab="tab-mode-a">
-          <span class="nav-icon">🐳</span> Mode A: Docker + Tunnel
+          <span class="nav-icon">🐳</span> Mode A: Local Ghost (Docker)
+        </button>
+        <button class="nav-item" data-tab="tab-tunnel">
+          <span class="nav-icon">☁️</span> Cloudflare Tunnel (Pro)
         </button>
         <button class="nav-item" data-tab="tab-mode-b">
           <span class="nav-icon">⚡</span> Mode B: Static Exporter
@@ -132,7 +135,7 @@
       <!-- TAB 2: MODE A (DOCKER) -->
       <section id="tab-mode-a" class="tab-pane">
         <div class="card">
-          <h2>🐳 Dedicated Docker Container per Project</h2>
+          <h2>🐳 Mode A: Local Ghost (Docker Container)</h2>
           <p>Each project runs in its own isolated Docker container with a dedicated persistent volume to store database & images safely.</p>
           <hr>
           <div class="form-group">
@@ -155,6 +158,7 @@
           <div class="form-group">
             <label>Status:</label>
             <div id="docker-info-box" class="status-box">Checking Docker status...</div>
+            <div id="docker-feedback-box" class="status-msg" style="display:none; margin-top:0.75rem; padding:0.75rem 1rem; border-radius:6px; border:1px solid #334155; background:rgba(99, 102, 241, 0.1); color:#f8fafc;"></div>
           </div>
 
           <div class="button-group" style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
@@ -164,6 +168,29 @@
             <button class="btn btn-secondary" id="btn-stop-fb" style="display:none;">🛑 Close File Browser</button>
             <span id="fb-timer-badge" style="display:none; font-family: monospace; font-weight: bold; background: rgba(99, 102, 241, 0.2); padding: 0.4rem 0.8rem; border-radius: 6px; color: #818cf8;"></span>
             <button class="btn btn-danger" id="btn-stop-docker">Stop Container</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB: CLOUDFLARE TUNNEL (PRO) -->
+      <section id="tab-tunnel" class="tab-pane">
+        <div class="card">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2>☁️ Cloudflare Tunnel Setup</h2>
+            <span style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.8rem; font-weight: 600;">Pro Managed Feature</span>
+          </div>
+          <p>Expose your local Ghost instance securely to the internet via Cloudflare Tunnel without opening router ports.</p>
+          <hr>
+          
+          <div class="form-group">
+            <label>Manual Command (Community Edition):</label>
+            <small class="help-text">Run this command in your terminal to expose local Ghost manually:</small>
+            <pre style="background: var(--card-bg, #1e293b); padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color, #334155); overflow-x: auto; color: #38bdf8; font-family: monospace; margin-top: 0.5rem;"><code id="cloudflare-cmd-code">cloudflared tunnel --url http://127.0.0.1:2368</code></pre>
+          </div>
+
+          <div style="background: rgba(99, 102, 241, 0.1); border: 1px solid var(--border-color, #334155); border-left: 4px solid #6366f1; padding: 1rem; border-radius: 6px; margin-top: 1rem;">
+            <h4 style="margin: 0 0 0.5rem 0; color: #818cf8;">ℹ️ Managed Cloud Tunnels in StaticGhost Pro</h4>
+            <p style="margin: 0; font-size: 0.9rem; color: var(--text-muted, #94a3b8);">Automated 1-click background process management, auto-reconnects, and custom domain mapping (<code>https://blog.swapp.solutions</code>) are included in <strong>StaticGhost Pro</strong>. Community Edition supports manual CLI execution above.</p>
           </div>
         </div>
       </section>
