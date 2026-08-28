@@ -13,7 +13,6 @@
 
 <br/>
 
-[![Ghost](https://img.shields.io/badge/Ghost-v5.0-black?style=flat-square&logo=ghost&logoColor=white)](https://ghost.org)
 [![Electron](https://img.shields.io/badge/Electron-43.3-47848F?style=flat-square&logo=electron&logoColor=white)](https://electronjs.org)
 [![Node.js](https://img.shields.io/badge/Node.js-v18%2B-339933?style=flat-square&logo=nodedotjs&logoColor=white)](https://nodejs.org)
 [![Docker](https://img.shields.io/badge/Docker-24.0-2496ED?style=flat-square&logo=docker&logoColor=white)](https://docker.com)
