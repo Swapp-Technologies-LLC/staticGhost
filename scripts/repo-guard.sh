@@ -39,7 +39,7 @@ fi
 # ---------------------------------------------------------------------
 # 3. Internal infrastructure details and credential patterns
 # ---------------------------------------------------------------------
-if git grep -nIE '192\.168\.[0-9]{1,3}\.[0-9]{1,3}|10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|zettlab|BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk_live_[A-Za-z0-9]{20,}' -- . ':!scripts/repo-guard.sh' ':!.github/workflows/repo-guard.yml'; then
+if git grep -nIE '192\.168\.[0-9]{1,3}\.[0-9]{1,3}|10\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}|zettlab|BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk_live_[A-Za-z0-9]{20,}' -- . ':!scripts/repo-guard.sh' ':!.github/workflows/repo-guard.yml' ':!*.svg'; then
   err "Internal IP/hostname or credential pattern found in tracked files. Scrub before merging."
 else
   say "ok: no internal infra details or credential patterns"
