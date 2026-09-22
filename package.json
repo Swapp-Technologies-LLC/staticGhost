@@ -21,7 +21,6 @@
   "license": "AGPL-3.0-only",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "express": "^4.19.2",
     "mime-types": "^2.1.35",
     "node-fetch": "^2.7.0"
   },
