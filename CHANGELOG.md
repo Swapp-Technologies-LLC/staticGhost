@@ -62,7 +62,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * **Desktop Application**: Electron-based interface for managing local Ghost instances via Docker and exporting complete static HTML sites.
 * **Native WebCrypto Password Protection**: AES-256-GCM encryption with PBKDF2-HMAC-SHA256 key derivation (600,000 iterations) running in-browser via platform-native `crypto.subtle` (zero third-party dependencies, zero CDN requests).
-* **Dual Licensing Model**: Published under GNU AGPLv3 with alternative Commercial Licensing available through Swapp Technologies LLC.
+* **Licensing (as published)**: This release's public metadata advertised the MIT license, but no `LICENSE` file was included, which left the licensing terms unclear. Corrected in 1.1.0: see *Licensing* above.
 * **Static Export Engine**: Clean HTML rendering, custom header/footer template injection, Pagefind client-side search indexing, and automated RSS/Sitemap XML generation.
 * **Compliance & Legal Protections**: Integrated FTC affiliate disclosure banners and automated `rel="sponsored nofollow noopener"` link attribute tagging.
 * **Documentation Architecture**: Comprehensive public documentation covering architecture specifications, standard operating procedures, and certification question banks.
