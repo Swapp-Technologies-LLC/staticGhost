@@ -61,7 +61,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.0.0] - 2026-08-05
 
-> **Withdrawn:** this release's installer bound local containers to all network interfaces and loaded CryptoJS from a CDN. Upgrade to 1.1.0.
+> **Removed:** the v1.0.0 installer was removed from GitHub Releases on 2026-09-22. It bound local containers to all network interfaces and loaded CryptoJS from a CDN. If you installed it, uninstall it and upgrade to 1.1.0.
 
 ### 🚀 Initial Production Release
 
