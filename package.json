@@ -17,8 +17,8 @@
     "cloudflare-tunnel",
     "affiliate-marketing"
   ],
-  "author": "Swapp Technologies LLC <devops@swapp.solutions> (https://www.swapp.solutions)",
-  "license": "SEE LICENSE IN LICENSE",
+  "author": "Swapp Technologies LLC <legal@swapp.solutions> (https://www.swapp.solutions)",
+  "license": "AGPL-3.0-only",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
     "express": "^4.19.2",

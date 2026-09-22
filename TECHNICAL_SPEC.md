@@ -149,14 +149,14 @@ Stored inside the persistent Docker volume mount `/var/lib/ghost/content/data/gh
   ```
   **Limitation:** because the ciphertext is published in a public file, it is subject to offline password attack. The iteration count raises that cost but does not eliminate it — post passwords should be strong.
 
-### 6.2 Legal Compliance (Startup Compliance Checklist)
-All of the following legal clauses apply to StaticGhost and are incorporated by reference into the [`LICENSE`](LICENSE) file:
+### 6.2 Commercial Terms — Draft Notes (not in effect, pending counsel)
+The public license is AGPL-3.0-only; its own warranty disclaimer and limitation of liability (§§15-16) govern Community Edition use. The draft terms below reflect intended terms for commercial licensing agreements:
 
 1. **Limitation of Liability Clause**: Swapp Technologies LLC's maximum aggregate monetary liability to any user arising out of the use of StaticGhost is capped at the total amount paid by that user in the 12 months prior to the claim, or $100 USD for free Community Edition users, whichever is greater. StaticGhost is provided "as-is" with no warranty of merchantability or fitness for a particular purpose.
 
-2. **Governing Law Clause**: This license and any disputes arising from the use of StaticGhost shall be governed by and construed in accordance with the laws of the **State of Texas, United States of America**, without regard to its conflict of law principles. Any legal action shall be brought exclusively in the state or federal courts located in Travis County, Texas.
+2. **Governing Law Clause**: Disputes arising under commercial agreements shall be governed by and construed in accordance with the laws of the **State of Maryland, United States of America**, without regard to its conflict of law principles. Any legal action shall be brought exclusively in the state or federal courts located in the State of Maryland.
 
-3. **Data Deletion Policy**: The StaticGhost Community Edition does not transmit, store, or share user blog content, API keys, or personal data to Swapp Technologies LLC servers. All such data remains on the user's local machine inside Electron's `userData` directory and Docker volumes. API keys are encrypted at rest using the host OS keychain. Users may delete all application data at any time by uninstalling the application and deleting the `userData` directory. Pro-tier edge analytics, where enabled, are governed separately by [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md).
+3. **Data Deletion Policy**: The StaticGhost Community Edition does not transmit, store, or share user blog content, API keys, or personal data to Swapp Technologies LLC servers. All such data remains on the user's local machine inside Electron's `userData` directory and Docker volumes. API keys are encrypted at rest using the host OS keychain. Users may delete all application data at any time by uninstalling the application and deleting the `userData` directory. Pro-tier edge analytics, where enabled, will be governed by a separate privacy policy (internal draft in `private-docs/PRIVACY_POLICY.md`).
 
 4. **Indemnification Clause**: The user agrees to indemnify, defend, and hold harmless Swapp Technologies LLC and its officers, directors, employees, and agents from and against any claims, damages, obligations, losses, liabilities, or expenses (including reasonable attorneys' fees) arising from: (a) the user's use of StaticGhost; (b) the user's violation of any term of this license; or (c) the user's violation of any third-party right, including any intellectual property, privacy, or data protection right.
 
@@ -245,5 +245,5 @@ Builds are saved directly to `dist/StaticGhost Setup <version>.exe` for distribu
 
 * [`docs/architecture/12_SECTION_TECHNICAL_SPEC.md`](docs/architecture/12_SECTION_TECHNICAL_SPEC.md) — Sanitized system architecture and data flow specifications.
 * [`DEVELOPMENT.md`](DEVELOPMENT.md) — Local developer setup, SemVer release guide, and contribution workflow.
-* [`LICENSE`](LICENSE) — Dual AGPLv3 / Commercial license terms with legal compliance clauses.
-* [`PRIVACY_POLICY.md`](PRIVACY_POLICY.md) — Privacy policy governing Pro-tier edge analytics.
+* [`LICENSE`](LICENSE) — GNU Affero General Public License v3 (AGPL-3.0-only).
+* [`private-docs/PRIVACY_POLICY.md`](private-docs/PRIVACY_POLICY.md) *(internal draft)* — Privacy policy governing Pro-tier edge analytics (pending counsel review and Pro launch).

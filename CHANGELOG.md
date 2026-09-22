@@ -16,6 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *Breaking Behavior:* If you previously accessed your local development Ghost container from other devices on your local network (e.g. mobile testing on LAN), that access is intentionally blocked. Use an authorized tunneling mechanism (such as Cloudflare Tunnel) to expose instances securely.
 * **Anchored Container Status Filtering**: Container status and inspect operations now use strict regex anchors (`name=^<container-name>$`) with escaped metacharacters via `DockerGhost.buildNameFilter()`. Sibling containers sharing common substrings (e.g., `blog` vs `blog-filebrowser`) will no longer merge status outputs or conflict during container lifecycle management.
 
+### 📜 Licensing
+
+* **Operative AGPL-3.0-only Public License**: `LICENSE` is now the verbatim GNU AGPLv3 (AGPL-3.0-only); commercial licensing by separate agreement. Previous public metadata advertised MIT with no LICENSE file; that was incorrect.
+
 ### 🚀 Added
 
 * **Time-Boxed File Browser Session Engine (`lib/filebrowser-timer.js`)**:

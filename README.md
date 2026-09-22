@@ -395,10 +395,10 @@ Created by **Swapp Technologies LLC**. Portions of this project were developed w
 
 StaticGhost is **dual-licensed** ([`LICENSE`](LICENSE)) — you may use it under EITHER of the following, at your option:
 
-* ✅ **GNU AGPLv3** — free to download, use, modify, and self-host, including for business use. If you run a modified version as a network service, AGPLv3 §13 requires you to offer that service's complete corresponding source to its users.
-* 💼 **Commercial License** — for organizations that want to offer StaticGhost as a hosted/managed service without the AGPLv3 source-disclosure obligation, or that need white-label or OEM redistribution terms.
+* ✅ **GNU AGPLv3 (AGPL-3.0-only)** — StaticGhost is licensed under the GNU AGPLv3 ([`LICENSE`](LICENSE)); free to download, use, modify, and self-host, including for business use. If you run a modified version as a network service, AGPLv3 §13 requires you to offer that service's complete corresponding source to its users.
+* 💼 **Commercial License** — available by separate written agreement from Swapp Technologies LLC for organizations that want to offer StaticGhost as a hosted/managed service without AGPL §13 obligations, or that need white-label or OEM redistribution terms.
 
 > **Note:** "StaticGhost" is a trademark of Swapp Technologies LLC. The dual-license grant above covers the source code; it does not grant rights to use the StaticGhost name or logo to brand a competing service.
 
-For commercial licensing, contact: `devops@swapp.solutions` / [swapp.solutions](https://www.swapp.solutions).
+For commercial licensing, contact: `legal@swapp.solutions` / [swapp.solutions](https://www.swapp.solutions).
 
