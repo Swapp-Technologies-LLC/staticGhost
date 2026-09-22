@@ -2,7 +2,7 @@
 
 > **SOP ID**: `SOP-STATICGHOST-02`  
 > **Category**: Daily Operations & Content Compilation  
-> **Target Role**: Certified Content Specialist / Technical Writer  
+> **Target Role**: Content Specialist / Technical Writer  
 
 ---
 
@@ -14,7 +14,7 @@ To execute daily blog writing workflows inside local Docker Ghost, configure pos
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Operator as Certified Operator
+    actor Operator as Operator
     participant App as StaticGhost Desktop
     participant Docker as Docker Ghost (:2368)
     participant Engine as Compiler Engine

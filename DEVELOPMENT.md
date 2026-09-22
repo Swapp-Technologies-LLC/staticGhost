@@ -108,9 +108,9 @@ StaticGhost adheres to the standard `vMAJOR.MINOR.PATCH` versioning convention:
    ```powershell
    npm run dist
    ```
-   *Note: If building behind a corporate VPN or proxy that inspects SSL handshakes, package downloads may fail with certificate errors. Bypass this using:*
+   *Note: If building behind a corporate VPN or proxy that inspects SSL handshakes, configure Node's extra CA certificates rather than disabling verification:*
    ```powershell
-   $env:NODE_TLS_REJECT_UNAUTHORIZED="0"; npm run dist
+   $env:NODE_EXTRA_CA_CERTS="C:\path\to\corporate-ca.pem"; npm run dist
    ```
 3. **Deploy Setup**: Open the `dist/` directory and run **`StaticGhost Setup <version>.exe`** to install the application natively. This registers the new launcher in the Start Menu and Desktop.
 

@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * *Impact:* Ghost and File Browser containers are no longer reachable from external network interfaces or local LAN peers, closing an attack surface that could bypass host-level packet filtering.
   * *Breaking Behavior:* If you previously accessed your local development Ghost container from other devices on your local network (e.g. mobile testing on LAN), that access is intentionally blocked. Use an authorized tunneling mechanism (such as Cloudflare Tunnel) to expose instances securely.
 * **Anchored Container Status Filtering**: Container status and inspect operations now use strict regex anchors (`name=^<container-name>$`) with escaped metacharacters via `DockerGhost.buildNameFilter()`. Sibling containers sharing common substrings (e.g., `blog` vs `blog-filebrowser`) will no longer merge status outputs or conflict during container lifecycle management.
+* **Native WebCrypto Migration & CDN Removal**: Password-protected posts now use the platform-native WebCrypto API (`crypto.subtle`) with authenticated AES-256-GCM and PBKDF2-HMAC-SHA256 (600,000 iterations). In v1.0.0, protected posts loaded CryptoJS from a public CDN (`cdnjs.cloudflare.com`) on every post view with only 10,000 iterations; that third-party network dependency and visitor IP disclosure have been eliminated.
+* **Exported-Site Analytics Flipped to Opt-In**: Removed the default third-party Cloudflare Web Analytics beacon script from exported HTML pages. Analytics injection is now strictly opt-in (`options.analyticsScript` required); default exports contain zero third-party tracking scripts.
 
 ### 📜 Licensing
 
@@ -29,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * **Structured Observability & Distributed Tracing (`lib/logger.js`)**:
   * Single-line JSON logger emitting structured fields (`timestamp`, `service`, `level`, `message`, `requestId`, `durationMs`, `endpoint`, `customerId`, `exception`, `metadata`).
   * Added OpenTelemetry-compatible `startSpan()` tracing wrappers with automatic duration calculation for static compilation and export jobs.
+* **Documentation Architecture**: Public documentation suite covering architecture specifications (`docs/architecture/`), standard operating procedures (`docs/sop/`), and compliance hygiene (`docs/compliance_and_ethics/`).
 * **Automated Verification Suite Expansion (`test-suite.js`)**:
   * Test Suite 7: Validates structured JSON logging format and distributed trace span lifecycle.
   * Test Suite 8: Validates file browser session timer math, extension clamps, and container sweep patterns.
@@ -56,13 +59,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.0] - 2026-08-17
+## [1.0.0] - 2026-08-05
+
+> **Withdrawn:** this release's installer bound local containers to all network interfaces and loaded CryptoJS from a CDN. Upgrade to 1.1.0.
 
 ### 🚀 Initial Production Release
 
 * **Desktop Application**: Electron-based interface for managing local Ghost instances via Docker and exporting complete static HTML sites.
-* **Native WebCrypto Password Protection**: AES-256-GCM encryption with PBKDF2-HMAC-SHA256 key derivation (600,000 iterations) running in-browser via platform-native `crypto.subtle` (zero third-party dependencies, zero CDN requests).
+* **Client-Side Content Encryption (Legacy)**: AES password protection utilizing CryptoJS loaded from a public CDN (`cdnjs.cloudflare.com`) with 10,000 PBKDF2 iterations. *(Replaced by native WebCrypto in 1.1.0.)*
 * **Licensing (as published)**: This release's public metadata advertised the MIT license, but no `LICENSE` file was included, which left the licensing terms unclear. Corrected in 1.1.0: see *Licensing* above.
 * **Static Export Engine**: Clean HTML rendering, custom header/footer template injection, Pagefind client-side search indexing, and automated RSS/Sitemap XML generation.
 * **Compliance & Legal Protections**: Integrated FTC affiliate disclosure banners and automated `rel="sponsored nofollow noopener"` link attribute tagging.
-* **Documentation Architecture**: Comprehensive public documentation covering architecture specifications, standard operating procedures, and certification question banks.

@@ -1,7 +1,6 @@
 # 🔍 Troubleshooting, Diagnostic Checklists & Failure Modes
 
-> **Target Audience**: Swapp Academy Students & Support Engineers  
-> **Ingestion Scope**: Whitelisted for Swapp Academy Frappe LMS Ingestion  
+> **Target Audience**: Developers & Support Engineers  
 
 ---
 
@@ -13,7 +12,7 @@
 | **`ERR-GHOST-401`** | `Ghost API Unauthorized` | Invalid Admin or Content API Key | Re-generate Content API Key in Ghost Admin -> Integrations -> Custom Integration. |
 | **`ERR-SEARCH-02`** | Search returns no results | Pagefind WASM index binary missing | Verify `outputDir/search/search-index.js` exists; re-run `npm test`. |
 | **`ERR-TEMPLATE-03`**| Layout photo placeholders broken | Excess `<!-- GHOST_PAGE_PHOTO -->` tags | Compiler automatically scrubs excess tags to `""`. Verify layout syntax. |
-| **`ERR-TLS-04`** | Asset download rejection | Host TLS certificate validation issue | Set `$env:NODE_TLS_REJECT_UNAUTHORIZED="0"` in terminal environment. |
+| **`ERR-TLS-04`** | Asset download rejection | Host TLS certificate validation issue | Check system clock is correct; if behind a corporate or antivirus proxy that re-signs TLS, set `NODE_EXTRA_CA_CERTS` to that proxy's CA certificate file. |
 
 ---
 

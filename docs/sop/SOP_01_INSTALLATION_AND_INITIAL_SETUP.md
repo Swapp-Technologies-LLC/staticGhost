@@ -2,7 +2,7 @@
 
 > **SOP ID**: `SOP-STATICGHOST-01`  
 > **Category**: Field Operations & Environment Setup  
-> **Target Role**: Certified StaticGhost Operator / Field Technician  
+> **Target Role**: StaticGhost Operator / Field Technician  
 
 ---
 

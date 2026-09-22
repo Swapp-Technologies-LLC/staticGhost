@@ -1,7 +1,6 @@
 # ⚖️ Compliance, Privacy Hygiene & Ethical Standards
 
-> **Target Audience**: Swapp Academy Students & Field Technicians  
-> **Ingestion Scope**: Whitelisted for Swapp Academy Frappe LMS Ingestion  
+> **Target Audience**: Developers, Field Technicians & Open Source Contributors  
 
 ---
 

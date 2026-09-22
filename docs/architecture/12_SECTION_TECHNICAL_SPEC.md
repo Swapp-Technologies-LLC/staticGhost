@@ -1,9 +1,8 @@
 # 🏛️ StaticGhost — Public Technical Architecture Specification
 
-> **Target Audience**: Swapp Academy Students, Open Source Contributors & System Integrators  
+> **Target Audience**: Developers, Open Source Contributors & System Integrators  
 > **Parent Enterprise**: Swapp Technologies LLC  
 > **Standard Conformed**: Master 12-Section Technical Specification Standard (`@myxfamily`)  
-> **Ingestion Scope**: Whitelisted for Swapp Academy Frappe LMS Ingestion  
 
 ---
 

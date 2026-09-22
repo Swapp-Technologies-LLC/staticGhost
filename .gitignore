@@ -59,6 +59,9 @@ profiles.json
 !THIRD-PARTY-NOTICES.md
 !docs/**/*.md
 
+# Certification curriculum and exam question bank (internal until Swapp Academy launch)
+docs/certification/
+
 # ---------------------------------------------------------------------
 # DELIBERATELY NOT RE-INCLUDED (internal business/strategy documents).
 # These were previously force-included and would have been published:

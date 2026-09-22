@@ -2,7 +2,7 @@
 
 > **SOP ID**: `SOP-STATICGHOST-03`  
 > **Category**: Field Deployment & Infrastructure Delivery  
-> **Target Role**: Certified DevOps Specialist / Web Administrator  
+> **Target Role**: DevOps Specialist / Web Administrator  
 
 ---
 

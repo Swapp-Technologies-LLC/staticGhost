@@ -202,9 +202,9 @@ Builds are saved directly to `dist/StaticGhost Setup <version>.exe` for distribu
 
 * **Ghost Offline Fallback**: If the local Ghost instance is offline during export, the main process catches connection errors and presents a user-facing alert without crashing.
 * **Empty Image Placeholders**: If the layout template has more `<!-- GHOST_PAGE_PHOTO -->` tags than actual body photos in a post, the excess tags are automatically replaced with empty strings (`""`) to prevent layout breaks.
-* **SSL Validation Bypass**: Bypasses local certificate validation errors during Electron bin package downloads using:
+* **Proxy Certificate Handling**: Resolves certificate validation errors during Electron package downloads behind re-signing corporate proxies using:
   ```powershell
-  $env:NODE_TLS_REJECT_UNAUTHORIZED="0"
+  $env:NODE_EXTRA_CA_CERTS="C:\path\to\corporate-ca.pem"
   ```
 
 ---
