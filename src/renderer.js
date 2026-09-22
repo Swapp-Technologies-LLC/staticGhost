@@ -615,11 +615,28 @@ document.addEventListener('DOMContentLoaded', async () => {
           const testRes = await window.ghostAppAPI.testGhostConnection({ baseUrl: url, apiKey: key });
           if (!testRes.success) {
             exportResultBox.style.color = '#ef4444';
-            exportResultBox.innerHTML = `❌ <strong>Export Failed: Cannot connect to Ghost.</strong><br>
-              <span style="font-size:0.9rem;">Reason: ${testRes.message || 'Unauthorized or container offline'}.</span><br>
-              <small style="color:#94a3b8; display:block; margin-top:0.5rem;">
-                Please verify that your Ghost container is started on port ${dockerPortInput.value || 2368} and that your Content API Key is correct.
-              </small>`;
+            exportResultBox.textContent = '';
+
+            const titleNode = document.createElement('strong');
+            titleNode.textContent = '❌ Export Failed: Cannot connect to Ghost.';
+            exportResultBox.appendChild(titleNode);
+
+            exportResultBox.appendChild(document.createElement('br'));
+
+            const reasonSpan = document.createElement('span');
+            reasonSpan.style.fontSize = '0.9rem';
+            reasonSpan.textContent = `Reason: ${testRes.message || 'Unauthorized or container offline'}.`;
+            exportResultBox.appendChild(reasonSpan);
+
+            exportResultBox.appendChild(document.createElement('br'));
+
+            const smallHint = document.createElement('small');
+            smallHint.style.color = '#94a3b8';
+            smallHint.style.display = 'block';
+            smallHint.style.marginTop = '0.5rem';
+            const portVal = dockerPortInput.value || 2368;
+            smallHint.textContent = `Please verify that your Ghost container is started on port ${portVal} and that your Content API Key is correct.`;
+            exportResultBox.appendChild(smallHint);
             return;
           }
         }
@@ -650,7 +667,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         const res = await window.ghostAppAPI.exportStaticSite(config);
         if (res.success) {
           exportResultBox.style.color = '#34d399';
-          exportResultBox.innerHTML = `✅ ${res.message}<br><small style="color:#94a3b8;">Output Directory: ${res.exportDir}</small>`;
+          exportResultBox.textContent = '';
+
+          const msgNode = document.createTextNode(`✅ ${res.message}`);
+          exportResultBox.appendChild(msgNode);
+
+          exportResultBox.appendChild(document.createElement('br'));
+
+          const smallDir = document.createElement('small');
+          smallDir.style.color = '#94a3b8';
+          smallDir.textContent = `Output Directory: ${res.exportDir}`;
+          exportResultBox.appendChild(smallDir);
+
           window.lastExportDir = res.exportDir;
         } else {
           exportResultBox.style.color = '#ef4444';
@@ -716,7 +744,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       const tdKey = document.createElement('td');
       tdKey.style.padding = '0.75rem 1rem';
-      tdKey.innerHTML = `<code class="badge">${t.key}</code>`;
+      const codeBadge = document.createElement('code');
+      codeBadge.className = 'badge';
+      codeBadge.textContent = t.key;
+      tdKey.appendChild(codeBadge);
       tr.appendChild(tdKey);
 
       const tdActions = document.createElement('td');
