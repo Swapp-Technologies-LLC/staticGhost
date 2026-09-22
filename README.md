@@ -385,7 +385,7 @@ This project is made possible thanks to the incredible open-source projects, too
 
 We strongly believe in supporting the open-source ecosystem that makes this tool possible.
 
-We actively contribute a portion of sponsorship funds received via GitHub Sponsors and Open Collective back to our core open-source dependency maintainers (the Ghost Foundation, Electron Project, Pagefind, and Cheerio).
+We actively contribute 20% of all sponsorship and donation funds received via GitHub Sponsors, Open Collective, and Buy Me a Coffee back to the Ghost Foundation, Electron, Pagefind, and our core open-source dependency maintainers.
 
 ---
 
@@ -398,7 +398,7 @@ StaticGhost is **dual-licensed** ([`LICENSE`](LICENSE)) — you may use it under
 * ✅ **GNU AGPLv3 (AGPL-3.0-only)** — StaticGhost is licensed under the GNU AGPLv3 ([`LICENSE`](LICENSE)); free to download, use, modify, and self-host, including for business use. If you run a modified version as a network service, AGPLv3 §13 requires you to offer that service's complete corresponding source to its users.
 * 💼 **Commercial License** — available by separate written agreement from Swapp Technologies LLC for organizations that want to offer StaticGhost as a hosted/managed service without AGPL §13 obligations, or that need white-label or OEM redistribution terms.
 
-> **Note:** "StaticGhost" is a trademark of Swapp Technologies LLC. The dual-license grant above covers the source code; it does not grant rights to use the StaticGhost name or logo to brand a competing service.
+> **Note:** StaticGhost is an independent project by Swapp Technologies LLC and is not affiliated with or endorsed by the Ghost Foundation. Ghost is a trademark of the Ghost Foundation. The license above covers the source code only.
 
 For commercial licensing, contact: `legal@swapp.solutions` / [swapp.solutions](https://www.swapp.solutions).
 
