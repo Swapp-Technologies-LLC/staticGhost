@@ -1,6 +1,34 @@
 const { app, BrowserWindow, ipcMain, dialog, safeStorage } = require('electron');
+const { autoUpdater } = require('electron-updater');
 const path = require('path');
 const fs = require('fs');
+
+// In-App Settings & electron-updater configuration
+const settingsPath = () => path.join(app.getPath('userData'), 'app-settings.json');
+
+function loadSettings() {
+  try {
+    const p = settingsPath();
+    if (fs.existsSync(p)) {
+      return JSON.parse(fs.readFileSync(p, 'utf8'));
+    }
+  } catch (e) {}
+  return { checkUpdatesOnStartup: true };
+}
+
+function saveSettings(settings) {
+  try {
+    const p = settingsPath();
+    const destDir = path.dirname(p);
+    if (!fs.existsSync(destDir)) {
+      fs.mkdirSync(destDir, { recursive: true });
+    }
+    fs.writeFileSync(p, JSON.stringify(settings, null, 2), 'utf8');
+  } catch (e) {}
+}
+
+autoUpdater.autoDownload = false;
+autoUpdater.autoInstallOnAppQuit = false;
 
 const GhostFetcher = require('./lib/ghost-fetcher');
 const DesignIngestor = require('./lib/design-ingestor');
@@ -99,6 +127,17 @@ function createWindow() {
   });
 
   mainWindow.loadFile(path.join(__dirname, 'src', 'index.html'));
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    const settings = loadSettings();
+    mainWindow.webContents.send('update-status', {
+      status: 'settings',
+      settings
+    });
+    if (settings.checkUpdatesOnStartup !== false) {
+      autoUpdater.checkForUpdates().catch(() => {});
+    }
+  });
 }
 
 app.whenReady().then(() => {
@@ -648,4 +687,98 @@ ipcMain.handle('export-static-site', async (event, config) => {
 ipcMain.handle('deploy-github', async (event, options) => {
   const deployer = new CloudDeployer(options);
   return await deployer.deployDirectory(options.exportDir);
+});
+
+// --- In-App Updates (electron-updater) ---
+autoUpdater.on('checking-for-update', () => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', { status: 'checking' });
+  }
+});
+
+autoUpdater.on('update-available', (info) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', {
+      status: 'available',
+      version: info.version,
+      releaseDate: info.releaseDate
+    });
+  }
+});
+
+autoUpdater.on('update-not-available', (info) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', {
+      status: 'not-available',
+      version: info.version
+    });
+  }
+});
+
+autoUpdater.on('error', (err) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', {
+      status: 'error',
+      message: (err && err.message) ? err.message : String(err)
+    });
+  }
+});
+
+autoUpdater.on('download-progress', (progressObj) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', {
+      status: 'downloading',
+      percent: Math.round(progressObj.percent || 0),
+      bytesPerSecond: progressObj.bytesPerSecond,
+      transferred: progressObj.transferred,
+      total: progressObj.total
+    });
+  }
+});
+
+autoUpdater.on('update-downloaded', (info) => {
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('update-status', {
+      status: 'downloaded',
+      version: info.version
+    });
+  }
+});
+
+ipcMain.handle('check-for-updates', async (_event, options) => {
+  if (options && typeof options.checkUpdatesOnStartup === 'boolean') {
+    const current = loadSettings();
+    current.checkUpdatesOnStartup = options.checkUpdatesOnStartup;
+    saveSettings(current);
+  }
+  try {
+    const result = await autoUpdater.checkForUpdates();
+    return { success: true, result };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('download-update', async () => {
+  try {
+    await autoUpdater.downloadUpdate();
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+ipcMain.handle('install-update', () => {
+  autoUpdater.quitAndInstall();
+});
+
+ipcMain.handle('get-update-settings', () => {
+  return loadSettings();
+});
+
+ipcMain.handle('set-update-settings', (_event, newSettings) => {
+  const current = loadSettings();
+  const updated = { ...current, ...newSettings };
+  saveSettings(updated);
+  return updated;
 });

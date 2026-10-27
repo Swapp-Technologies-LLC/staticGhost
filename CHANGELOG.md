@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🚀 Added
 
+* **In-App Update Notifications**: In-app update notifications from GitHub Releases; updates download and install only when you click. The startup check can be turned off in Settings.
 * **Time-Boxed File Browser Session Engine (`lib/filebrowser-timer.js`)**:
   * Implemented session timer controls: 15-minute default session, +15-minute extend step, and a 2-hour hard maximum cap calculated from initial startup timestamp.
   * Container image strictly pinned to `filebrowser/filebrowser:v2.30.0` to eliminate supply-chain drift.
@@ -55,7 +56,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 📦 Binary Distribution Notice
 
-* `StaticGhost Setup 1.1.0.exe` is distributed as an unsigned Windows executable. Code-signing certificates and automated over-the-air update mechanisms are scheduled for subsequent release phases. Verify SHA256 checksums when distributing release binaries.
+* `StaticGhost Setup 1.1.0.exe` is distributed as an unsigned Windows executable. Code-signing certificates are scheduled for subsequent release phases. Verify SHA256 checksums when distributing release binaries.
 
 ---
 

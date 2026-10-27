@@ -29,6 +29,9 @@ private-docs/
 # Electron build distributions
 dist/
 
+# Electron auto-update development configuration
+dev-app-update.yml
+
 # Test exports
 test-export-output/
 

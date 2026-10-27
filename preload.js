@@ -19,5 +19,15 @@ contextBridge.exposeInMainWorld('ghostAppAPI', {
   exportStaticSite: (config) => ipcRenderer.invoke('export-static-site', config),
   deployGithub: (options) => ipcRenderer.invoke('deploy-github', options),
   openExternal: (url) => ipcRenderer.invoke('open-external', url),
-  openReadme: () => ipcRenderer.invoke('open-readme')
+  openReadme: () => ipcRenderer.invoke('open-readme'),
+  onUpdateStatus: (callback) => {
+    const handler = (_event, data) => callback(data);
+    ipcRenderer.on('update-status', handler);
+    return () => ipcRenderer.removeListener('update-status', handler);
+  },
+  checkForUpdates: (options) => ipcRenderer.invoke('check-for-updates', options),
+  downloadUpdate: () => ipcRenderer.invoke('download-update'),
+  installUpdate: () => ipcRenderer.invoke('install-update'),
+  getUpdateSettings: () => ipcRenderer.invoke('get-update-settings'),
+  setUpdateSettings: (settings) => ipcRenderer.invoke('set-update-settings', settings)
 });

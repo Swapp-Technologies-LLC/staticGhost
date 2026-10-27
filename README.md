@@ -355,6 +355,11 @@ When exposing your local container via **Mode A Cloudflare Tunnels**, traffic is
 For newsletters or user registrations on your static website, double opt-in is enforced by default:
 - Even if an unauthorized person had physical access to your keyboard or submitted inputs, they cannot finalize newsletter signup without direct access to the recipient's personal email inbox to click the verification links.
 
+### 5. Privacy & Network Activity (In-App Updates)
+StaticGhost prioritizes privacy and makes zero network calls without user configuration, with one transparent exception:
+- **In-App Update Checks**: When enabled, StaticGhost queries public GitHub Releases at startup (`https://api.github.com/repos/Swapp-Technologies-LLC/staticGhost/releases`) to notify you when newer releases become available. During this request, your client IP address and the running app version are visible to GitHub. Updates are never automatically downloaded or installed without your explicit click.
+- **How to Turn Off**: You can disable startup update checks at any time by unchecking **"Check for updates on startup"** in the **App Settings & Updates** panel on the Overview tab. When unchecked, no network requests are made at startup.
+
 ---
 
 ## 🛡️ Security Disclaimer & Token Best Practices

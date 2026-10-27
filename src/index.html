@@ -63,6 +63,9 @@
 
     <!-- Main Content Body -->
     <main class="main-content">
+      <!-- In-App Update Notification Banner -->
+      <div id="update-notification-banner" style="display: none; margin-bottom: 1.5rem; padding: 0.75rem 1.25rem; border-radius: 8px; background: rgba(30, 41, 59, 0.95); border: 1px solid #38bdf8; box-shadow: 0 4px 15px rgba(0,0,0,0.3); align-items: center; justify-content: space-between; gap: 1rem;"></div>
+
       <!-- Title Header Bar -->
       <header class="app-header" style="display: flex; align-items: center; gap: 1.5rem; margin-bottom: 2rem;">
         <img id="app-header-logo" src="./logo.jpg" alt="StaticGhost Logo" style="height: 72px; border-radius: 12px; border: 1.5px solid var(--accent-color); box-shadow: 0 4px 15px rgba(20, 157, 204, 0.25);">
@@ -131,6 +134,21 @@
             Need a Content API Key? <a href="https://github.com/Swapp-Technologies-LLC/staticGhost#-ghost-content-api-key-setup" class="external-link" style="color: var(--secondary); text-decoration: underline;">How to create a Content API Key ↗</a>
           </small>
           <div id="connection-status-box" class="status-msg" style="display:none;"></div>
+        </div>
+
+        <div class="card margin-top">
+          <h3>⚙️ App Settings & Updates</h3>
+          <p style="font-size: 0.9rem; color: #94a3b8;">Manage in-app update checks and release notifications from GitHub Releases.</p>
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; margin-top: 1rem;">
+            <label style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; cursor: pointer; color: #cbd5e1;">
+              <input type="checkbox" id="chk-update-startup" checked>
+              Check for updates on startup
+            </label>
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <button class="btn btn-outline btn-sm" id="btn-check-updates">Check for Updates</button>
+            </div>
+          </div>
+          <div id="update-status-msg" style="display: none; font-size: 0.85rem; margin-top: 0.75rem; color: #94a3b8;"></div>
         </div>
       </section>
 

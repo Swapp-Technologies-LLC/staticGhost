@@ -871,6 +871,145 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
+  // --- In-App Updates UI Logic ---
+  const updateBanner = document.getElementById('update-notification-banner');
+  const btnCheckUpdates = document.getElementById('btn-check-updates');
+  const chkUpdateStartup = document.getElementById('chk-update-startup');
+  const updateStatusMsg = document.getElementById('update-status-msg');
+
+  function setUpdateStatusText(message, isError = false) {
+    if (!updateStatusMsg) return;
+    updateStatusMsg.textContent = '';
+    if (!message) {
+      updateStatusMsg.style.display = 'none';
+      return;
+    }
+    updateStatusMsg.style.display = 'block';
+    updateStatusMsg.style.color = isError ? '#f87171' : '#94a3b8';
+    updateStatusMsg.textContent = message;
+  }
+
+  function renderUpdateBanner(state) {
+    if (!updateBanner) return;
+    updateBanner.textContent = '';
+
+    if (!state || state.hidden) {
+      updateBanner.style.display = 'none';
+      return;
+    }
+
+    updateBanner.style.display = 'flex';
+
+    const textSpan = document.createElement('span');
+    textSpan.style.color = '#f8fafc';
+    textSpan.style.fontSize = '0.9rem';
+    textSpan.style.fontWeight = '500';
+
+    if (state.type === 'available') {
+      textSpan.textContent = `Version ${state.version} is available`;
+      updateBanner.appendChild(textSpan);
+
+      const btnDownload = document.createElement('button');
+      btnDownload.className = 'btn btn-primary btn-sm';
+      btnDownload.style.fontSize = '0.8rem';
+      btnDownload.style.padding = '0.3rem 0.8rem';
+      btnDownload.textContent = 'Download';
+      btnDownload.addEventListener('click', async () => {
+        btnDownload.disabled = true;
+        btnDownload.textContent = 'Starting Download...';
+        if (window.ghostAppAPI && window.ghostAppAPI.downloadUpdate) {
+          await window.ghostAppAPI.downloadUpdate();
+        }
+      });
+      updateBanner.appendChild(btnDownload);
+    } else if (state.type === 'downloading') {
+      const pct = state.percent || 0;
+      textSpan.textContent = `Downloading update: ${pct}%`;
+      updateBanner.appendChild(textSpan);
+
+      const progressBar = document.createElement('div');
+      progressBar.style.width = '140px';
+      progressBar.style.height = '8px';
+      progressBar.style.background = '#334155';
+      progressBar.style.borderRadius = '4px';
+      progressBar.style.overflow = 'hidden';
+
+      const progressFill = document.createElement('div');
+      progressFill.style.width = `${pct}%`;
+      progressFill.style.height = '100%';
+      progressFill.style.background = '#38bdf8';
+      progressFill.style.transition = 'width 0.2s';
+      progressBar.appendChild(progressFill);
+      updateBanner.appendChild(progressBar);
+    } else if (state.type === 'downloaded') {
+      textSpan.textContent = `Version ${state.version} ready to install`;
+      updateBanner.appendChild(textSpan);
+
+      const btnRestart = document.createElement('button');
+      btnRestart.className = 'btn btn-primary btn-sm';
+      btnRestart.style.fontSize = '0.8rem';
+      btnRestart.style.padding = '0.3rem 0.8rem';
+      btnRestart.textContent = 'Restart to install';
+      btnRestart.addEventListener('click', () => {
+        if (window.ghostAppAPI && window.ghostAppAPI.installUpdate) {
+          window.ghostAppAPI.installUpdate();
+        }
+      });
+      updateBanner.appendChild(btnRestart);
+    }
+  }
+
+  if (btnCheckUpdates) {
+    btnCheckUpdates.addEventListener('click', async () => {
+      setUpdateStatusText('Checking for updates...');
+      if (window.ghostAppAPI && window.ghostAppAPI.checkForUpdates) {
+        const res = await window.ghostAppAPI.checkForUpdates();
+        if (!res.success) {
+          setUpdateStatusText(`Update notice: ${res.error || 'Unable to check for updates.'}`, true);
+        }
+      }
+    });
+  }
+
+  if (chkUpdateStartup) {
+    if (window.ghostAppAPI && window.ghostAppAPI.getUpdateSettings) {
+      window.ghostAppAPI.getUpdateSettings().then((settings) => {
+        if (settings && typeof settings.checkUpdatesOnStartup === 'boolean') {
+          chkUpdateStartup.checked = settings.checkUpdatesOnStartup;
+        }
+      });
+    }
+    chkUpdateStartup.addEventListener('change', async (e) => {
+      if (window.ghostAppAPI && window.ghostAppAPI.setUpdateSettings) {
+        await window.ghostAppAPI.setUpdateSettings({ checkUpdatesOnStartup: e.target.checked });
+      }
+    });
+  }
+
+  if (window.ghostAppAPI && window.ghostAppAPI.onUpdateStatus) {
+    window.ghostAppAPI.onUpdateStatus((data) => {
+      if (data.status === 'checking') {
+        setUpdateStatusText('Checking for updates...');
+      } else if (data.status === 'available') {
+        setUpdateStatusText('');
+        renderUpdateBanner({ type: 'available', version: data.version });
+      } else if (data.status === 'not-available') {
+        setUpdateStatusText(`StaticGhost is up to date (v${data.version || 'current'}).`);
+        renderUpdateBanner({ hidden: true });
+      } else if (data.status === 'downloading') {
+        renderUpdateBanner({ type: 'downloading', percent: data.percent });
+      } else if (data.status === 'downloaded') {
+        renderUpdateBanner({ type: 'downloaded', version: data.version });
+      } else if (data.status === 'error') {
+        setUpdateStatusText(`Update notice: ${data.message || 'Unable to check for updates.'}`, true);
+      } else if (data.status === 'settings' && data.settings && chkUpdateStartup) {
+        if (typeof data.settings.checkUpdatesOnStartup === 'boolean') {
+          chkUpdateStartup.checked = data.settings.checkUpdatesOnStartup;
+        }
+      }
+    });
+  }
+
   // Initial profile load and version display
   await loadAllProfiles();
 
